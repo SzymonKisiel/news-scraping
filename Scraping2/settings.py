@@ -1,4 +1,4 @@
-# Scrapy settings for Scrapping2 project
+# Scrapy settings for Scraping2 project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'Scrapping2'
+BOT_NAME = 'Scraping2'
 
-SPIDER_MODULES = ['Scrapping2.spiders']
-NEWSPIDER_MODULE = 'Scrapping2.spiders'
+SPIDER_MODULES = ['Scraping2.spiders']
+NEWSPIDER_MODULE = 'Scraping2.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'Scrapping2 (+http://www.yourdomain.com)'
+#USER_AGENT = 'Scraping2 (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'Scrapping2.middlewares.Scrapping2SpiderMiddleware': 543,
+#    'Scraping2.middlewares.Scrapping2SpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'Scrapping2.middlewares.Scrapping2DownloaderMiddleware': 543,
+#    'Scraping2.middlewares.Scrapping2DownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'Scrapping2.pipelines.Scrapping2Pipeline': 300,
+#    'Scraping2.pipelines.Scrapping2Pipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)

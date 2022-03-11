@@ -1,5 +1,6 @@
 import scrapy
-
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 
 class NewsSpider(scrapy.Spider):
     name = "news_test"
@@ -10,8 +11,8 @@ class NewsSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        articles = response.css('div.row.content--block a.contentLink')
-        # for article in articles:
+        #articles = response.css('div.row.content--block a.contentLink')
+        articles = response.css("div.row.content--block a.contentLink::attr('href')").getall()
         yield from response.follow_all(articles, self.parse_article)
         if self.page < self.MAX_PAGE:
             self.page += 1
@@ -37,7 +38,12 @@ class NewsSpider(scrapy.Spider):
             'text': extract_all_with_css('.article--paragraph ::text')
         }
 
-# response.css('div.row').get()
-# response.css('a').get()
-# response.css('div.row div.col--fill a.contentLink::attr(href)').get()
-# response.css('div.row.content--block a.contentLink::attr(href)').get()
+# process = CrawlerProcess(get_project_settings())
+process = CrawlerProcess(settings={
+    "FEEDS": {
+        "items.json": {"format": "json", "encoding": "utf8"},
+    },
+})
+# 'news_test' is the name of one of the spiders of the project.
+process.crawl(NewsSpider)
+process.start() # the script will block here until the crawling is finished
