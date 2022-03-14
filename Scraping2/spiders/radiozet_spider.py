@@ -47,6 +47,7 @@ class RadiozetNewsSpider(scrapy.Spider):
             'publishedAt': extract_with_css("div.info-header__date--published ::attr('data-date')"),
             'title': extract_with_css("h1.full__header__title ::text"),
             'author': extract_all_with_css("div.info-header__author ::text"),
-            'subtitle': extract_all_with_css("div.full__article__lead p ::text"),
-            'text': extract_all_with_css("div.full__article__body p ::text, div.full_article__body h2 ::text")
+            'subtitle': extract_all_with_css("div.full__article__lead ::text"),
+            'text': extract_all_with_css("div.full__article__body p ::text, div.full__article__body h2 ::text, "
+                                         "div.full__article__body ul ::text")
         }

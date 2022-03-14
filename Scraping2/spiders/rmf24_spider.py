@@ -34,7 +34,7 @@ class Rmf24NewsSpider(scrapy.Spider):
             'url': response.url,
             'publishedAt': extract_with_css("div.article-date meta[itemprop='datePublished'] ::attr('content')"),
             'title': extract_with_css("h1.article-title ::text"),
-            'author': extract_with_css("span.article-author-name ::text"),
+            'author': extract_all_with_css(".isAutor ::text"),
             'subtitle': extract_with_css("p.article-lead ::text"),
             'text': extract_all_with_css("div.articleContent p ::text, div.articleContent h2 ::text")
         }
