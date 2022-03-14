@@ -1,19 +1,15 @@
 import scrapy
+import re
 from scrapy.spiders import SitemapSpider
-
-
-# sitemap w scrapy shell:
-# scrapy shell "https://www.fakt.pl/sitemap_article.xml"
-# response.selector.register_namespace('d', 'http://www.sitemaps.org/schemas/sitemap/0.9')
-# response.xpath('//d:loc/text()').getall()[
 
 
 class FaktNewsSpider(SitemapSpider):
     name = "fakt_spider"
     allowed_domains = ["fakt.pl"]
     sitemap_urls = ["https://www.fakt.pl/sitemap_article.xml"]
+    sitemap_follow = [re.escape("https://www.fakt.pl/sitemap_article.xml?nmbr=20220310")]  # 2022 March 10 articles
 
-    # parse article found in sitemap
+    # parse articles found in sitemap
     def parse(self, response):
         def extract_with_css(query):
             return response.css(query).get(default='').strip()

@@ -6,9 +6,9 @@ import scrapy
 class Rmf24NewsSpider(scrapy.Spider):
     name = "rmf24_spider"
     page = 1
-    MAX_PAGE = 10
+    MAX_PAGE = 20
     start_urls = [
-        'https://www.rmf24.pl/fakty/swiat',
+        'https://www.rmf24.pl/fakty'
     ]
 
     def parse(self, response):

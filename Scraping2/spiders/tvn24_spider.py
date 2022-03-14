@@ -8,7 +8,7 @@ import scrapy
 class Tvn24NewsSpider(scrapy.Spider):
     name = "tvn24_spider"
     page = 1
-    MAX_PAGE = 10
+    MAX_PAGE = 5 #10
     start_urls = [
         'https://tvn24.pl/najnowsze',
     ]
