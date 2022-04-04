@@ -5,20 +5,24 @@ import scrapy
 
 class Rmf24NewsSpider(scrapy.Spider):
     name = "rmf24_spider"
-    page = 1
-    MAX_PAGE = 20
+    #page = 1
+    #MAX_PAGE = 20
     start_urls = [
         'https://www.rmf24.pl/fakty'
+        #'https://www.rmf24.pl/fakty,nPack,28804'
     ]
 
     def parse(self, response):
         articles = response.css("h3 a::attr('href')").getall()
         yield from response.follow_all(articles, self.parse_article)
-        if self.page < self.MAX_PAGE:
-            self.page += 1
-            next_page = response.css("li.next a::attr('href')").get()
-            if next_page is not None:
-                yield response.follow(next_page, callback=self.parse)
+        # if self.page < self.MAX_PAGE:
+        #     self.page += 1
+        #     next_page = response.css("li.next a::attr('href')").get()
+        #     if next_page is not None:
+        #         yield response.follow(next_page, callback=self.parse)
+        next_page = response.css("li.next a::attr('href')").get()
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse)
 
     def parse_article(self, response):
         def extract_with_css(query):
@@ -27,7 +31,7 @@ class Rmf24NewsSpider(scrapy.Spider):
         def extract_all_with_css(query):
             result = ''
             for block in response.css(query).getall():
-                result += block.strip()
+                result += block.strip() + " "
             return result
 
         yield {

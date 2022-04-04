@@ -3,8 +3,8 @@ import scrapy
 
 class RadiozetNewsSpider(scrapy.Spider):
     name = "radiozet_spider"
-    page = 1
-    MAX_PAGE = 2
+    # page = 1
+    # MAX_PAGE = 2
     start_urls = [
         'https://wiadomosci.radiozet.pl'
         #'https://www.radiozet.pl',
@@ -18,19 +18,22 @@ class RadiozetNewsSpider(scrapy.Spider):
 
         # debug
         categories = categories[1:3]
-        # for category in categories:
-        #     print(category)
+        for category in categories:
+            print(category)
 
         yield from response.follow_all(categories, self.parse_category)
 
     def parse_category(self, response):
         articles = response.css("div.list-element__title a::attr('href')").getall()
         yield from response.follow_all(articles, self.parse_article)
-        if self.page < self.MAX_PAGE:
-            self.page += 1
-            next_page = response.css("a.pagination__button--next ::attr('href')").get()
-            if next_page is not None:
-                yield response.follow(next_page, callback=self.parse_category)
+        # if self.page < self.MAX_PAGE:
+        #     self.page += 1
+        #     next_page = response.css("a.pagination__button--next ::attr('href')").get()
+        #     if next_page is not None:
+        #         yield response.follow(next_page, callback=self.parse_category)
+        next_page = response.css("a.pagination__button--next ::attr('href')").get()
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse_category)
 
     def parse_article(self, response):
         def extract_with_css(query):
@@ -39,7 +42,7 @@ class RadiozetNewsSpider(scrapy.Spider):
         def extract_all_with_css(query):
             result = ''
             for block in response.css(query).getall():
-                result += block.strip()
+                result += block.strip() + " "
             return result
 
         yield {
