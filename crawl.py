@@ -16,7 +16,6 @@ def crawl(name: str):
     })
 
     process = CrawlerProcess(settings)
-    # process.crawl(f"{name}_spider")  # use spider from Scraping2/spiders/news_spiders
     if name == 'fakt':
         process.crawl(FaktNewsSpider)
     elif name == 'onet':

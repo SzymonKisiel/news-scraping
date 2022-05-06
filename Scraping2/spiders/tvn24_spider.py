@@ -3,10 +3,12 @@
 # main-mesh-box__text-container box__text-container
 # main-mesh-box__text-container box__text-container
 import scrapy
+from utils import spider_util
 
 
-class Tvn24NewsSpider(scrapy.Spider):
+class Tvn24NewsSpider(spider_util.NewsSpider):
     name = "tvn24_spider"
+    website = "tvn24"
     page = 1
     start_urls = [
         f"https://tvn24.pl/najnowsze/{page}"
@@ -25,8 +27,8 @@ class Tvn24NewsSpider(scrapy.Spider):
 
     def parse(self, response):
         # debug
-        # if self.page > 200:
-        #     return
+        if self.page > 200:
+            return
         if response.status == 500:
             self.crawler.stats.inc_value('skipped_page_count')
             self.skipped_pages.append(response.url)
@@ -54,24 +56,23 @@ class Tvn24NewsSpider(scrapy.Spider):
             self.crawler.stats.inc_value('skipped_article_count')
             self.skipped_articles.append(response.url)
 
-        def extract_with_css(query):
-            return response.css(query).get(default='').strip()
-
-        def extract_all_with_css(query):
-            result = ''
-            for block in response.css(query).getall():
-                result += block.strip() + " "
-            return result
-
+        dt = self.parse_article_datetime(response)
         yield {
             'url': response.url,
-            'publishedAt': extract_with_css("time.article-top-bar__date ::attr('datetime')"),
-            'title': extract_with_css("h1.heading ::text"),
-            'author': extract_with_css("div.author-first-name ::text"),
-            'subtitle': extract_with_css(".article-element--lead_text ::text"),
-            'text': extract_all_with_css(".article-element--paragraph ::text, .article-element--subhead ::text")
+            'publishedAt': dt.isoformat(),
+            'title': self.extract_with_css(response, "h1.heading ::text"),
+            'author': self.extract_with_css(response, "div.author-first-name ::text"),
+            'subtitle': self.extract_with_css(response, ".article-element--lead_text ::text"),
+            'text': self.extract_all_with_css(response, ".article-element--paragraph ::text,"
+                                                        ".article-element--subhead ::text")
         }
 
+    def extract_publish_date(self, response):
+        return self.extract_with_css(response, ".article__content__meta-date ::attr(datetime)")
+        # return self.extract_with_css(response, ".article-top-bar__date ::attr(datetime)")
+        # return self.extract_with_css(response, "utils.article-top-bar__date ::attr('datetime')")
+
     def closed(self, reason):
+        super().closed(reason)
         self.crawler.stats.set_value('skipped_pages', ', '.join(self.skipped_pages))
         self.crawler.stats.set_value('skipped_articles', ', '.join(self.skipped_articles))

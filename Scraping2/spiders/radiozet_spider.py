@@ -1,14 +1,21 @@
 import scrapy
-#test = response.css(".radiozet-footer__top a::attr('href')").getall()
+from utils import spider_util
 
-class RadiozetNewsSpider(scrapy.Spider):
+
+# test = response.css(".radiozet-footer__top a::attr('href')").getall()
+
+
+class RadiozetNewsSpider(spider_util.NewsSpider):
     name = "radiozet_spider"
+    website = "radiozet"
+    delay_setting_name = "DELAY_RADIOZET"
     # page = 1
     # MAX_PAGE = 2
     start_urls = [
         'https://wiadomosci.radiozet.pl'
-        #'https://www.radiozet.pl',
+        # 'https://www.radiozet.pl',
     ]
+
     # allowed_domains = [
     #     'wiadomosci.radiozet.pl'
     # ]
@@ -36,21 +43,17 @@ class RadiozetNewsSpider(scrapy.Spider):
             yield response.follow(next_page, callback=self.parse_category)
 
     def parse_article(self, response):
-        def extract_with_css(query):
-            return response.css(query).get(default='').strip()
-
-        def extract_all_with_css(query):
-            result = ''
-            for block in response.css(query).getall():
-                result += block.strip() + " "
-            return result
-
+        dt = self.parse_article_datetime(response)
         yield {
             'url': response.url,
-            'publishedAt': extract_with_css("div.info-header__date--published ::attr('data-date')"),
-            'title': extract_with_css("h1.full__header__title ::text"),
-            'author': extract_all_with_css("div.info-header__author ::text"),
-            'subtitle': extract_all_with_css("div.full__article__lead ::text"),
-            'text': extract_all_with_css("div.full__article__body p ::text, div.full__article__body h2 ::text, "
-                                         "div.full__article__body ul ::text")
+            'publishedAt': dt.isoformat(),
+            'title': self.extract_with_css(response, "h1.full__header__title ::text"),
+            'author': self.extract_all_with_css(response, "div.info-header__author ::text"),
+            'subtitle': self.extract_all_with_css(response, "div.full__article__lead ::text"),
+            'text': self.extract_all_with_css(response, "div.full__article__body p ::text, "
+                                                        "div.full__article__body h2 ::text,"
+                                                        "div.full__article__body ul ::text")
         }
+
+    def extract_publish_date(self, response):
+        return self.extract_with_css(response, "div.info-header__date--published ::attr('data-date')")

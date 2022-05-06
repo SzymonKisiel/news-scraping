@@ -1,44 +1,55 @@
 # h3
+import datetime
 
 import scrapy
+from scrapy import exceptions
+from utils import spider_util
 
 
-class Rmf24NewsSpider(scrapy.Spider):
+class Rmf24NewsSpider(spider_util.NewsSpider):
     name = "rmf24_spider"
-    #page = 1
-    #MAX_PAGE = 20
+    website = "rmf24"
+    delay_setting_name = "DELAY_RMF24"
+    # page = 1
+    # MAX_PAGE = 20
     start_urls = [
         'https://www.rmf24.pl/fakty'
-        #'https://www.rmf24.pl/fakty,nPack,28804'
+        # 'https://www.rmf24.pl/fakty,nPack,28804'
     ]
+
+    def __init__(self, category=None, *args, **kwargs):
+        super(Rmf24NewsSpider, self).__init__(*args, **kwargs)
 
     def parse(self, response):
         articles = response.css("h3 a::attr('href')").getall()
+        # test = {}
         yield from response.follow_all(articles, self.parse_article)
-        # if self.page < self.MAX_PAGE:
-        #     self.page += 1
-        #     next_page = response.css("li.next a::attr('href')").get()
-        #     if next_page is not None:
-        #         yield response.follow(next_page, callback=self.parse)
+        # print(test)
+        # print(articles_responses)
+        # for i in articles_responses:
+        #     print(i)
+        # yield from articles_responses
+
         next_page = response.css("li.next a::attr('href')").get()
         if next_page is not None:
             yield response.follow(next_page, callback=self.parse)
 
     def parse_article(self, response):
-        def extract_with_css(query):
-            return response.css(query).get(default='').strip()
-
-        def extract_all_with_css(query):
-            result = ''
-            for block in response.css(query).getall():
-                result += block.strip() + " "
-            return result
-
+        dt = self.parse_article_datetime(response)
         yield {
             'url': response.url,
-            'publishedAt': extract_with_css("div.article-date meta[itemprop='datePublished'] ::attr('content')"),
-            'title': extract_with_css("h1.article-title ::text"),
-            'author': extract_all_with_css(".isAutor ::text"),
-            'subtitle': extract_with_css("p.article-lead ::text"),
-            'text': extract_all_with_css("div.articleContent p ::text, div.articleContent h2 ::text")
+            'publishedAt': dt.isoformat(),
+            'title': self.extract_with_css(response, "h1.article-title ::text"),
         }
+        # yield {
+        #     'url': response.url,
+        #     'publishedAt': publishedAt,
+        #     'title': extract_with_css("h1.article-title ::text"),
+        #     'author': extract_all_with_css(".isAutor ::text"),
+        #     'subtitle': extract_with_css("p.article-lead ::text"),
+        #     'text': extract_all_with_css("div.articleContent p ::text, div.articleContent h2 ::text")
+        # }
+
+    def extract_publish_date(self, response):
+        return self.extract_with_css(response, "div.article-date meta[itemprop='datePublished'] ::attr('content')")
+

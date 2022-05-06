@@ -32,3 +32,5 @@ w3lib==1.22.0
 zope.interface==5.4.0
 
 pandas~=1.4.1
+pytz~=2021.3
+tzlocal~=4.2
