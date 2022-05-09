@@ -77,14 +77,15 @@ def catch_error(failure):
 
 def main():
     # crawl(Rmf24NewsSpider)
-    # crawl(RadiozetNewsSpider)
-    # reactor.run()
-    dt = datetime.datetime.now(timezone.utc).astimezone()
-    print(dt)
-    print(dt.isoformat())
-    print(datetime.datetime.fromisoformat(dt.isoformat()))
-    time_util.set_last_scraped_date(dt, "rmf24")
+    crawl(RadiozetNewsSpider)
+    reactor.run()
+    # dt = datetime.datetime.now(timezone.utc).astimezone()
+    # print(dt)
+    # print(dt.isoformat())
+    # print(datetime.datetime.fromisoformat(dt.isoformat()))
+    # time_util.set_last_scraped_date(dt, "rmf24")
 
 
 if __name__ == '__main__':
     main()
+    # print(datetime.datetime.min)

@@ -1,6 +1,6 @@
 import scrapy
 from utils import time_util
-
+from scrapy.exceptions import CloseSpider
 
 class NewsSpider(scrapy.Spider):
     """
@@ -39,7 +39,7 @@ class NewsSpider(scrapy.Spider):
         if dt > self.last_crawl_date:
             print(f"OK: {dt}")
         else:
-            raise scrapy.exceptions.CloseSpider("Reached old articles")
+            raise CloseSpider("Reached old articles")
 
         if dt > self.last_scraped_date:
             self.last_scraped_date = dt
