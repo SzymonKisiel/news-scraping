@@ -13,6 +13,7 @@ from utils import time_util, spider_util
 class FaktNewsSpider(SitemapSpider, spider_util.NewsSpider):
     name = 'fakt_spider'
     website = "fakt"
+    delay_setting_name = "DELAY_FAKT"
     allowed_domains = ['fakt.pl']
     sitemap_urls = ['https://www.fakt.pl/sitemap_article.xml']
 

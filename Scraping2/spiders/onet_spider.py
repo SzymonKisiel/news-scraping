@@ -10,6 +10,7 @@ from pytz import timezone
 class OnetNewsSpider(spider_util.NewsSpider):
     name = "onet_spider"
     website = "onet"
+    delay_setting_name = "DELAY_ONET"
     start_urls = [
         'https://wiadomosci.onet.pl/mapa-serwisu'
     ]

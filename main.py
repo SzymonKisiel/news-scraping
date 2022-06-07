@@ -22,14 +22,6 @@ from datetime import timezone
 websites = ['fakt', 'onet', 'radiozet', 'rmf24', 'tvn24']
 
 
-def get_delay_name(crawler):
-    if crawler == FaktNewsSpider:
-        return "DELAY_FAKT"
-    if crawler == Rmf24NewsSpider:
-        return "DELAY_RMF24"
-
-
-
 def my_task(test=0):
     print(f"starting task {test}...", end='')
     sleep(1)
@@ -54,13 +46,13 @@ def schedule_next_crawl(null, sleep_time, crawler):
 
 def crawl(crawler):
     """
-    A "recursive" function that schedules a crawl 30 seconds after
-    each successful crawl.
+    A "recursive" function that schedules a crawl X seconds after
+    each successful crawl, where X is crawl delay from settings.py file.
     """
     settings = get_project_settings()
     # save all scraped data without checking duplicates
     settings.set("FEEDS", {
-        "data/test_items.jsonl": {"format": "jsonlines", "encoding": "utf8"},
+        f"data/test/{crawler.name}.jsonl": {"format": "jsonlines", "encoding": "utf8"},
     })
     # crawl_job() returns a Deferred
     d = crawl_job(settings, crawler)
@@ -76,8 +68,11 @@ def catch_error(failure):
 
 
 def main():
-    # crawl(Rmf24NewsSpider)
+    crawl(Rmf24NewsSpider)
     crawl(RadiozetNewsSpider)
+    crawl(Tvn24NewsSpider)
+    crawl(FaktNewsSpider)
+    crawl(OnetNewsSpider)
     reactor.run()
     # dt = datetime.datetime.now(timezone.utc).astimezone()
     # print(dt)

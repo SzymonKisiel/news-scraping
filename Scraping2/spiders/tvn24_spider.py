@@ -9,6 +9,7 @@ from utils import spider_util
 class Tvn24NewsSpider(spider_util.NewsSpider):
     name = "tvn24_spider"
     website = "tvn24"
+    delay_setting_name = "DELAY_TVN24"
     page = 1
     start_urls = [
         f"https://tvn24.pl/najnowsze/{page}"
