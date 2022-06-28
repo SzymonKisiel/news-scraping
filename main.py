@@ -1,86 +1,49 @@
-import datetime
-
-import scrapy
-from twisted.internet.task import LoopingCall
-from twisted.internet import reactor
-from time import sleep
-# from scrapy.crawler import CrawlRunner
-# from scrapy.utils.log import configure_logging
-
-from scrapy.crawler import CrawlerRunner
-from scrapy.utils.project import get_project_settings
-from Scraping2.spiders.fakt_spider import FaktNewsSpider
-from Scraping2.spiders.onet_spider import OnetNewsSpider
-from Scraping2.spiders.radiozet_spider import RadiozetNewsSpider
-from Scraping2.spiders.rmf24_spider import Rmf24NewsSpider
-from Scraping2.spiders.tvn24_spider import Tvn24NewsSpider
-
-from utils import time_util
-
-from datetime import timezone
-
-websites = ['fakt', 'onet', 'radiozet', 'rmf24', 'tvn24']
-
-
-def my_task(test=0):
-    print(f"starting task {test}...", end='')
-    sleep(1)
-    print(f"ending task {test}")
-
-
-def crawl_job(settings: scrapy.crawler.Settings, crawler):
-    """
-    Job to start spiders.
-    Return Deferred, which will execute after crawl has completed.
-    """
-    runner = CrawlerRunner(settings)
-    return runner.crawl(crawler)
-
-
-def schedule_next_crawl(null, sleep_time, crawler):
-    """
-    Schedule the next crawl
-    """
-    reactor.callLater(sleep_time, crawl, crawler)
-
-
-def crawl(crawler):
-    """
-    A "recursive" function that schedules a crawl X seconds after
-    each successful crawl, where X is crawl delay from settings.py file.
-    """
-    settings = get_project_settings()
-    # save all scraped data without checking duplicates
-    settings.set("FEEDS", {
-        f"data/test/{crawler.name}.jsonl": {"format": "jsonlines", "encoding": "utf8"},
-    })
-    # crawl_job() returns a Deferred
-    d = crawl_job(settings, crawler)
-
-    delay = settings.get(crawler.delay_setting_name)
-    # call schedule_next_crawl(<scrapy response>, n) after crawl job is complete
-    d.addCallback(schedule_next_crawl, delay, crawler)
-    d.addErrback(catch_error)
-
-
-def catch_error(failure):
-    print(failure)
+import argparse
+from utils.time_util import *
+from datetime import *
+import pytz
+from crawl import crawl_websites
+from utils.websites_util import websites
+from set_scraping_start import set_scraping_start
 
 
 def main():
-    crawl(Rmf24NewsSpider)
-    crawl(RadiozetNewsSpider)
-    crawl(Tvn24NewsSpider)
-    crawl(FaktNewsSpider)
-    crawl(OnetNewsSpider)
-    reactor.run()
-    # dt = datetime.datetime.now(timezone.utc).astimezone()
-    # print(dt)
-    # print(dt.isoformat())
-    # print(datetime.datetime.fromisoformat(dt.isoformat()))
-    # time_util.set_last_scraped_date(dt, "rmf24")
+    parser = argparse.ArgumentParser()
+    subparser = parser.add_subparsers(dest='command', required=True)
+
+    crawl_cmd = subparser.add_parser('crawl')
+    crawl_cmd.add_argument('--websites', type=str, required=True, nargs='+', choices=websites)
+
+    crawl_all_cmd = subparser.add_parser('crawl_all')
+
+    search_cmd = subparser.add_parser('search')
+    search_cmd.add_argument('--word', type=str, required=True)
+
+    set_scraping_start_cmd = subparser.add_parser('set_scraping_start')
+    set_scraping_start_cmd.add_argument('--websites', type=str, required=True, nargs='+', choices=websites)
+    set_scraping_start_cmd.add_argument('--date', type=str, required=True)
+
+    set_scraping_start_all_cmd = subparser.add_parser('set_scraping_start_all')
+    set_scraping_start_all_cmd.add_argument('--date', type=str, required=True)
+
+    args = parser.parse_args()
+    if args.command == 'crawl':
+        print(f"Crawling {args.websites}\n")
+        crawl_websites(args.websites)
+    elif args.command == 'crawl_all':
+        print(f"Crawling all websites\n")
+        crawl_websites(websites)
+    elif args.command == 'search':
+        print(f"Searching for {args.word}\n")
+    elif args.command == 'set_scraping_start':
+        print(f"Setting scraping start date ({args.date}) for {args.websites}\n")
+        for website in args.websites:
+            set_scraping_start(args.date, website)
+    elif args.command == 'set_scraping_start_all':
+        print(f"Setting scraping start date ({args.date}) for all websites\n")
+        for website in websites:
+            set_scraping_start(args.date, website)
 
 
 if __name__ == '__main__':
     main()
-    # print(datetime.datetime.min)

@@ -37,7 +37,7 @@ class RadiozetNewsSpider(spider_util.NewsSpider):
         # debug
         categories = categories[1:3]
         for category in categories:
-            print(category)
+            # print(category)
             # init dictionary
             self.stop_following_links_in_category[category] = False
 
@@ -62,10 +62,10 @@ class RadiozetNewsSpider(spider_util.NewsSpider):
     def parse_article_datetime(self, response):
         published_at = self.extract_publish_date(response)
         dt = time_util.string_to_datetime(published_at, self.website)
-        if dt > self.last_crawl_date:
-            print(f"OK: {dt}")
-        else:
+        if dt <= self.last_crawl_date:
             raise CloseCategory
+        else:
+            pass #print(f"OK: {dt}")
 
         if dt > self.last_scraped_date:
             self.last_scraped_date = dt
@@ -93,6 +93,5 @@ class RadiozetNewsSpider(spider_util.NewsSpider):
         return self.extract_with_css(response, "div.info-header__date--published ::attr('data-date')")
 
     def closed(self, reason):
-        print(f" - - - {self.name} closed - - - ")
-        print(f"Spider closed: reached old articles (last published at {self.last_scraped_date})")
+        print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
         time_util.set_last_scraped_date(self.last_scraped_date, self.website)

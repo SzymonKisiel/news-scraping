@@ -2,6 +2,7 @@ import scrapy
 from utils import time_util
 from scrapy.exceptions import CloseSpider
 
+
 class NewsSpider(scrapy.Spider):
     """
     Spider
@@ -12,6 +13,8 @@ class NewsSpider(scrapy.Spider):
         super().__init__(*args, **kwargs)
         self.last_crawl_date = time_util.get_last_scraped_date(self.website)
         self.last_scraped_date = self.last_crawl_date
+
+        print(f"Spider {self.name} started")
 
     def extract_with_css(self, response, query):
         return response.css(query).get(default='').strip()
@@ -36,10 +39,10 @@ class NewsSpider(scrapy.Spider):
     def parse_article_datetime(self, response):
         published_at = self.extract_publish_date(response)
         dt = time_util.string_to_datetime(published_at, self.website)
-        if dt > self.last_crawl_date:
-            print(f"OK: {dt}")
-        else:
+        if dt <= self.last_crawl_date:
             raise CloseSpider("Reached old articles")
+        else:
+            pass  # print(f"OK: {dt}")
 
         if dt > self.last_scraped_date:
             self.last_scraped_date = dt
@@ -47,8 +50,7 @@ class NewsSpider(scrapy.Spider):
 
     def closed(self, reason):
         if reason == "Reached old articles":
-            print(f" - - - {self.name} closed - - - ")
-            print(f"Spider closed: reached old articles (last published at {self.last_scraped_date})")
+            print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
             time_util.set_last_scraped_date(self.last_scraped_date, self.website)
         elif reason == "Not implemented":
             raise NotImplementedError

@@ -20,8 +20,8 @@ class FaktNewsSpider(SitemapSpider, spider_util.NewsSpider):
     date_sitemap_regex = re.escape('https://www.fakt.pl/sitemap_article.xml?nmbr=')
     date_sitemap_format = 'https://www.fakt.pl/sitemap_article.xml?nmbr=%Y%m%d'
 
-    # def __init__(self, category=None, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
     #     self.last_crawl_date = time_util.get_last_scraped_date(self.website)
     #     self.last_scraped_date = self.last_crawl_date
 
@@ -54,10 +54,10 @@ class FaktNewsSpider(SitemapSpider, spider_util.NewsSpider):
         published_at_str = self.extract_publish_date(response)
         published_at_dt = time_util.string_to_datetime(published_at_str, self.website)
         if published_at_dt <= self.last_crawl_date:
-            print(f"not OK: {published_at_dt}")
+            # print(f"not OK: {published_at_dt}")
             return
         else:
-            print(f"OK: {published_at_dt}")
+            pass # print(f"OK: {published_at_dt}")
 
         if published_at_dt > self.last_scraped_date:
             self.last_scraped_date = published_at_dt
@@ -74,8 +74,7 @@ class FaktNewsSpider(SitemapSpider, spider_util.NewsSpider):
         return self.extract_with_css(response, ".article-date ::attr(datetime)")
 
     def close(self, reason):
-        print(f" - - - {self.name} closed - - - ")
-        print(f"Spider closed: reached old articles (last published at {self.last_scraped_date})")
+        print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
         time_util.set_last_scraped_date(self.last_scraped_date, self.website)
 
 
@@ -106,6 +105,5 @@ class FaktNewsSpider(SitemapSpider, spider_util.NewsSpider):
 #         }
 #
 #     def closed(self, reason):
-#         print(f" - - - {self.name} closed - - - ")
-#         print(f"Spider closed: reached old articles (last published at {self.last_scraped_date})")
+#         print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
 #         time_util.set_last_scraped_date(self.last_scraped_date, self.website)

@@ -44,7 +44,7 @@ class OnetNewsSpider(spider_util.NewsSpider):
         if published_at_dt <= self.last_crawl_date:
             return
         else:
-            print(f"OK: {published_at_dt}")
+            pass #print(f"OK: {published_at_dt}")
 
         if published_at_dt > self.last_scraped_date:
             self.last_scraped_date = published_at_dt
@@ -62,6 +62,5 @@ class OnetNewsSpider(spider_util.NewsSpider):
         return self.extract_with_css(response, "div.dates meta ::attr(content)")
 
     def closed(self, reason):
-        print(f" - - - {self.name} closed - - - ")
-        print(f"Spider closed: reached old articles (last published at {self.last_scraped_date})")
+        print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
         time_util.set_last_scraped_date(self.last_scraped_date, self.website)

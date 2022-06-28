@@ -40,6 +40,9 @@ class Rmf24NewsSpider(spider_util.NewsSpider):
             'url': response.url,
             'publishedAt': dt.isoformat(),
             'title': self.extract_with_css(response, "h1.article-title ::text"),
+            'author': self.extract_all_with_css(".isAutor ::text"),
+            'subtitle': self.extract_with_css(response, "p.article-lead ::text"),
+            'text': self.extract_all_with_css(response, "div.articleContent p ::text, div.articleContent h2 ::text")
         }
         # yield {
         #     'url': response.url,

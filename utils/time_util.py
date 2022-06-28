@@ -44,12 +44,19 @@ default_dates = {
     "rmf24": "1900-01-01T00:00:00+00:00",
     "tvn24": "1900-01-01T00:00:00+00:00"
 }
-dates_filename = Path('test.json')
+dates_path = Path('last_article_dates.json')
+
+
+def create_last_scraped_dates():
+    dates_path.touch(exist_ok=True)
+    with open(dates_path, 'w') as file:
+        json.dump(default_dates, file)
 
 
 def get_last_scraped_date(website: str) -> datetime:
-    # last_scraped_dates = {}
-    with open(dates_filename, 'r') as f:
+    if not dates_path.is_file():
+        create_last_scraped_dates()
+    with open(dates_path, 'r') as f:
         try:
             last_scraped_dates = json.load(f)
         except JSONDecodeError:
@@ -60,8 +67,9 @@ def get_last_scraped_date(website: str) -> datetime:
 
 
 def set_last_scraped_date(dt: datetime, website: str):
-    # last_scraped_dates = {}
-    with open(dates_filename, 'r') as file:
+    if not dates_path.is_file():
+        create_last_scraped_dates()
+    with open(dates_path, 'r') as file:
         try:
             last_scraped_dates = json.load(file)
         except JSONDecodeError:
@@ -69,5 +77,5 @@ def set_last_scraped_date(dt: datetime, website: str):
         if website not in last_scraped_dates:
             raise KeyError("website is not available")
     last_scraped_dates[website] = dt.isoformat()
-    with open(dates_filename, 'w') as file:
+    with open(dates_path, 'w') as file:
         json.dump(last_scraped_dates, file)
