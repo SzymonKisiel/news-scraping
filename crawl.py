@@ -49,12 +49,20 @@ class CrawlerRunnerProcess(Process):
     def run(self):
         deferred = self.runner.crawl(self.spider, self.args)
         deferred.addBoth(lambda _: reactor.stop())
+        print(f"Is running: {reactor.running}")
         reactor.run(installSignalHandlers=False)
 
 
 # The wrapper to make it run multiple spiders, multiple times
 def run_spider(spider, *args):
-    runner = CrawlerRunnerProcess(spider, *args)
+    # runner = CrawlerRunner(get_project_settings())
+    #
+    # runner.start()
+    # runner.join()
+    runner = CrawlerProcess(get_project_settings())
+    deferred = runner.crawl(spider, args)
+    reactor.callLater(30, run_spider, spider, args)
+    # deferred.callLater(30, run_spider, spider, args)
     runner.start()
     runner.join()
 
@@ -70,39 +78,17 @@ def crawl(website_name):
         raise Exception(f"Website \"{website_name}\" does not exist")
     delay = settings.get(crawler.delay_setting_name)
 
-    print("debug")
-    print(f"Debug:\ndelay_setting_name = {crawler.delay_setting_name}\ndelay = {delay}")
-    delay = 100
-
-    deferred = task.LoopingCall(reactor.callLater, 0, run_spider, crawler)
-    deferred.start(delay)
-
-
-# async def cmdloop():
-#     while True:
-#         print("loop")
-#         line = ''
-#         # line = stdin.readline()
-#         line = await aioconsole.ainput('Is this your line?')
-#         if line == "stop":
-#             break
-#         sleep(3)
-#     if reactor.running:
-#         print("Received stop signal")
-#         reactor.stop()
+    run_spider(crawler)
+    #
+    # print("debug")
+    # print(f"Debug:\ndelay_setting_name = {crawler.delay_setting_name}\ndelay = {delay}")
+    # delay = 100
+    #
+    # deferred = task.LoopingCall(reactor.callLater, 0, run_spider, crawler)
+    # deferred.start(delay)
 
 
 def crawl_websites(websites: list[str]):
-    # websites = [
-    #     "fakt",
-    #     "rmf24",
-    #     "onet",
-    #     "radiozet",
-    #     "tvn24"
-    # ]
-    if reactor.running:
-        reactor.stop()
-
     for website in websites:
         crawl(website)
 
