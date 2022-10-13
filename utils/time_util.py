@@ -1,8 +1,12 @@
+import datetime
 from datetime import *
+from email.policy import default
 from pytz import timezone
 import json
 from pathlib import Path
 from json.decoder import JSONDecodeError
+import pytz
+from datetime import datetime
 
 date_formats = {
     "fakt": "%Y-%m-%dT%H:%M:%S.%f%z",
@@ -12,6 +16,8 @@ date_formats = {
     # "tvn24": "%Y-%m-%dT%H:%M:%S.%f%z"
     "tvn24": "%Y-%m-%dT%H:%M:%S.%f"
 }
+
+default_date_format = "%Y-%m-%dT%H:%M:%S%z"
 
 
 def try_strptime(str, format):
@@ -28,10 +34,14 @@ def try_strptime(str, format):
     return dt
 
 
-def string_to_datetime(date_string: str, website: str) -> datetime:
+def string_to_datetime(date_string: str, website: str = None) -> datetime:
     local = timezone("Poland")
     date_string = date_string.replace("Z", "+0000")
-    dt = try_strptime(date_string, date_formats[website])
+    if website is not None:
+        date_format = date_formats[website]
+    else:
+        date_format = default_date_format
+    dt = try_strptime(date_string, date_format)
     if dt is not None and dt.tzinfo is None:
         dt = local.localize(dt)
     return dt
@@ -79,3 +89,7 @@ def set_last_scraped_date(dt: datetime, website: str):
     last_scraped_dates[website] = dt.isoformat()
     with open(dates_path, 'w') as file:
         json.dump(last_scraped_dates, file)
+
+
+def get_timezone_aware_now() -> datetime:
+    return datetime.utcnow().replace(tzinfo=pytz.utc)
