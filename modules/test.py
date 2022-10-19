@@ -1,14 +1,14 @@
 import datetime
-from utils.time_util import string_to_datetime, get_timezone_aware_now
+from scrapy.utils.project import get_project_settings
 from twisted.internet import defer
 from scrapy.crawler import CrawlerProcess
-from reactor_queue import ReactorQueue
-from scrapy.utils.project import get_project_settings
-from twisted.internet import reactor
-from Scraping2.spiders.test_spider1 import AuthorSpider
-from Scraping2.spiders.test_spider2 import QuotesSpider
-from scrapy.settings import Settings
 from scrapy import Spider
+from twisted.internet import reactor
+from news_scraping.spiders.test_spider1 import AuthorSpider
+from news_scraping.spiders.test_spider2 import QuotesSpider
+from scrapy.settings import Settings
+from utils.reactor_queue import ReactorQueue
+from utils.time_util import get_timezone_aware_now
 
 
 def test():
@@ -18,13 +18,13 @@ def test():
 
     settings = get_project_settings()
     settings.set("FEEDS", {
-        f"data/test_fajne/authors.jsonl": {"format": "jsonlines", "encoding": "utf8"},
+        f"data/test_test/authors.jsonl": {"format": "jsonlines", "encoding": "utf8"},
     })
     settings.set("LOG_ENABLED", False)
 
     settings2 = get_project_settings()
     settings2.set("FEEDS", {
-        f"data/test_fajne/quotes.jsonl": {"format": "jsonlines", "encoding": "utf8"},
+        f"data/test_test/quotes.jsonl": {"format": "jsonlines", "encoding": "utf8"},
     })
     settings2.set("LOG_ENABLED", False)
 

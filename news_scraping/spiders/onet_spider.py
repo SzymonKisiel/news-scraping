@@ -3,11 +3,14 @@
 import datetime
 
 import scrapy
-from utils import time_util, spider_util
+
+from utils.spider_util import NewsSpider
+from utils.time_util import string_to_datetime
+from modules.set_scraping_start import set_last_scraped_date
 from pytz import timezone
 
 
-class OnetNewsSpider(spider_util.NewsSpider):
+class OnetNewsSpider(NewsSpider):
     name = "onet_spider"
     website = "onet"
     delay_setting_name = "DELAY_ONET"
@@ -35,12 +38,15 @@ class OnetNewsSpider(spider_util.NewsSpider):
             dt = datetime.datetime.strptime(day_str + time_str, "%Y-%m-%d %H:%M")
             dt = local.localize(dt)
             if dt >= self.last_crawl_date:
-                yield response.follow(article, self.parse_article)
+                yield scrapy.Request(article, callback=self.parse_article)
+                # yield response.follow(article, self.parse_article)
+                # meta = {'dont_redirect': True}
         # yield from response.follow_all(articles, self.parse_article)
 
     def parse_article(self, response):
+        print(response.url)
         published_at_str = self.extract_publish_date(response)
-        published_at_dt = time_util.string_to_datetime(published_at_str, self.website)
+        published_at_dt = string_to_datetime(published_at_str, self.website)
         if published_at_dt <= self.last_crawl_date:
             return
         else:
@@ -48,6 +54,14 @@ class OnetNewsSpider(spider_util.NewsSpider):
 
         if published_at_dt > self.last_scraped_date:
             self.last_scraped_date = published_at_dt
+
+        # temp
+        url = response.url
+        published_at = published_at_dt.isoformat()
+        title = self.extract_with_css(response, "h1.mainTitle ::text")
+        author = self.extract_all_with_css(response, ".authDesc ::text", ".authorItem ::text")
+        subtitle = self.extract_all_with_css(response, "#lead ::text")
+        text = self.extract_all_with_css(response, ".articleDetail p ::text, .articleDetail h2 ::text")
 
         yield {
             'url': response.url,
@@ -59,8 +73,10 @@ class OnetNewsSpider(spider_util.NewsSpider):
         }
 
     def extract_publish_date(self, response):
-        return self.extract_with_css(response, "div.dates meta ::attr(content)")
+        # return self.extract_with_css(response, "div.dates meta ::attr(content)")
+        # return self.extract_with_css(response, "meta.article:published_time ::attr(content)")
+        return self.extract_with_css(response, "meta[property='article:published_time'] ::attr(content)")
 
     def closed(self, reason):
         print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
-        time_util.set_last_scraped_date(self.last_scraped_date, self.website)
+        set_last_scraped_date(self.last_scraped_date, self.website)

@@ -1,25 +1,16 @@
-from Scraping2.spiders.fakt_spider import FaktNewsSpider
-from Scraping2.spiders.onet_spider import OnetNewsSpider
-from Scraping2.spiders.radiozet_spider import RadiozetNewsSpider
-from Scraping2.spiders.rmf24_spider import Rmf24NewsSpider
-from Scraping2.spiders.tvn24_spider import Tvn24NewsSpider
-from scrapy import Spider
+websites = [
+    'fakt', 'onet', 'radiozet', 'rmf24', 'tvn24',
+    # 'test1', 'test2'
+]
 
-websites = ['fakt', 'onet', 'radiozet', 'rmf24', 'tvn24']
-websites_name_crawler = {
-    'fakt': FaktNewsSpider,
-    'onet': OnetNewsSpider,
-    'radiozet': RadiozetNewsSpider,
-    'rmf24': Rmf24NewsSpider,
-    'tvn24': Tvn24NewsSpider
+date_formats = {
+    "fakt": "%Y-%m-%dT%H:%M:%S.%f%z",
+    "onet": "%Y-%m-%d %H:%M:%S%z",
+    "radiozet": "%d.%m.%Y %H:%M",
+    "rmf24": "%Y-%m-%dT%H:%M:%S",
+    "tvn24": "%Y-%m-%dT%H:%M:%S.%f"
 }
 
 
-def website_name_to_crawler(website_name: str):
-    """
-    Returns website Spider for website name
-    Returns None if website name is incorrect
-    """
-    if website_name not in websites:
-        return None
-    return websites_name_crawler[website_name]
+def website_name_to_data_filename(website_name: str) -> str:
+    return website_name + ".jsonl"

@@ -1,4 +1,4 @@
-import scrapy
+import news_scraping
 import re
 from scrapy.spiders import SitemapSpider
 
