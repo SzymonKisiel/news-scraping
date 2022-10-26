@@ -2,7 +2,7 @@
 # class="main-mesh-box__text-container box__text-container"
 # main-mesh-box__text-container box__text-container
 # main-mesh-box__text-container box__text-container
-import news_scraping
+import scrapy
 from utils import spider_util
 
 
@@ -34,13 +34,13 @@ class Tvn24NewsSpider(spider_util.NewsSpider):
             self.crawler.stats.inc_value('skipped_page_count')
             self.skipped_pages.append(response.url)
             self.page += 1
-            yield news_scraping.Request(f"https://tvn24.pl/najnowsze/{self.page}", callback=self.parse)
+            yield scrapy.Request(f"https://tvn24.pl/najnowsze/{self.page}", callback=self.parse)
         else:
             articles = response.css("article div div a::attr('href')").getall()
             if articles:
                 yield from response.follow_all(articles, self.parse_article)
                 self.page += 1
-                yield news_scraping.Request(f"https://tvn24.pl/najnowsze/{self.page}", callback=self.parse)
+                yield scrapy.Request(f"https://tvn24.pl/najnowsze/{self.page}", callback=self.parse)
 
         # if self.page < self.MAX_PAGE:
         #     self.page += 1
