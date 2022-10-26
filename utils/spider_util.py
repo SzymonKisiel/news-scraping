@@ -1,12 +1,10 @@
-from abc import ABC
-
 import scrapy
 from settings.last_article_dates import get_last_scraped_date, set_last_scraped_date
 from utils import time_util
 from scrapy.exceptions import CloseSpider
 
 
-class NewsSpider(scrapy.Spider, ABC):
+class NewsSpider(scrapy.Spider):
     """
     Spider
     """
@@ -42,6 +40,7 @@ class NewsSpider(scrapy.Spider, ABC):
     def parse_article_datetime(self, response):
         published_at = self.extract_publish_date(response)
         dt = time_util.string_to_datetime(published_at, self.website)
+
         if dt <= self.last_crawl_date:
             raise CloseSpider("Reached old articles")
         else:
@@ -57,3 +56,5 @@ class NewsSpider(scrapy.Spider, ABC):
             set_last_scraped_date(self.last_scraped_date, self.website)
         elif reason == "Not implemented":
             raise NotImplementedError
+        else:
+            print(f"Spider {self.name} closed")

@@ -4,6 +4,8 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import logging
+from settings.onet_cookies import renew_onet_cookies_file
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
@@ -101,3 +103,29 @@ class Scrapping2DownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+# class RandomProxyForReDirectedUrls(object):
+#     def process_response(self, request, response, spider):
+#         if "utm_source=wiadomosci.onet.pl_viasg_wiadomosci" in response.url:
+#             request = request.replace(url=request.meta['redirect_urls'][0])
+#             request.dont_filter = True
+#             logging.error("Redirecting back to original url: %s" % request.meta['redirect_urls'][0])
+#             print("Redirecting back to original url: %s" % request.meta['redirect_urls'][0])
+#             return request
+#         else:
+#             return response
+
+
+class RenewCookiesMiddleware(object):
+    def process_response(self, request, response, spider):
+        if spider.website == 'onet' and response.status == 302:
+            print('FAILED')
+            print(request.url)
+            print(response.url)
+
+            renew_onet_cookies_file()
+            return request
+            # return response
+        else:
+            return response

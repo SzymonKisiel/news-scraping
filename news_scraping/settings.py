@@ -50,9 +50,10 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'news_scraping.middlewares.Scrapping2DownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    # 'news_scraping.middlewares.Scrapping2DownloaderMiddleware': 543,
+    'news_scraping.middlewares.RenewCookiesMiddleware': 600
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html

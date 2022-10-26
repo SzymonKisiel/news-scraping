@@ -1,11 +1,10 @@
-# response.css(".archiveDay ::attr(href)").getall()
-# response.css(".itemTitle ::attr(href)").getall()
 import datetime
 
 import scrapy
 
 from utils.spider_util import NewsSpider
 from utils.time_util import string_to_datetime
+from settings.onet_cookies import get_onet_cookies
 from modules.set_scraping_start import set_last_scraped_date
 from pytz import timezone
 
@@ -27,7 +26,6 @@ class OnetNewsSpider(NewsSpider):
             dt = local.localize(dt)
             if dt.date() >= self.last_crawl_date.date():
                 yield response.follow(archive_day, self.parse_day, cb_kwargs={'day_str': archive_day_str})
-        # yield from response.follow_all(archive_days, self.parse_day, cb_kwargs={'day_str': archive_day_str})
 
     def parse_day(self, response, day_str):
         articles = response.css(".itemTitle ::attr(href)").getall()
@@ -38,30 +36,25 @@ class OnetNewsSpider(NewsSpider):
             dt = datetime.datetime.strptime(day_str + time_str, "%Y-%m-%d %H:%M")
             dt = local.localize(dt)
             if dt >= self.last_crawl_date:
-                yield scrapy.Request(article, callback=self.parse_article)
-                # yield response.follow(article, self.parse_article)
-                # meta = {'dont_redirect': True}
-        # yield from response.follow_all(articles, self.parse_article)
+                onet_cookies = get_onet_cookies()
+                yield response.follow(article, self.parse_article,
+                                      meta={
+                                          'dont_redirect': True,
+                                          "handle_httpstatus_list": [302],
+                                      },
+                                      cookies=onet_cookies)
 
     def parse_article(self, response):
-        print(response.url)
+        # print(f"[{response.status}] {response.url}")
         published_at_str = self.extract_publish_date(response)
         published_at_dt = string_to_datetime(published_at_str, self.website)
         if published_at_dt <= self.last_crawl_date:
             return
         else:
-            pass #print(f"OK: {published_at_dt}")
+            pass
 
         if published_at_dt > self.last_scraped_date:
             self.last_scraped_date = published_at_dt
-
-        # temp
-        url = response.url
-        published_at = published_at_dt.isoformat()
-        title = self.extract_with_css(response, "h1.mainTitle ::text")
-        author = self.extract_all_with_css(response, ".authDesc ::text", ".authorItem ::text")
-        subtitle = self.extract_all_with_css(response, "#lead ::text")
-        text = self.extract_all_with_css(response, ".articleDetail p ::text, .articleDetail h2 ::text")
 
         yield {
             'url': response.url,
@@ -73,8 +66,6 @@ class OnetNewsSpider(NewsSpider):
         }
 
     def extract_publish_date(self, response):
-        # return self.extract_with_css(response, "div.dates meta ::attr(content)")
-        # return self.extract_with_css(response, "meta.article:published_time ::attr(content)")
         return self.extract_with_css(response, "meta[property='article:published_time'] ::attr(content)")
 
     def closed(self, reason):
