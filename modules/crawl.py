@@ -54,12 +54,12 @@ def run(spider: Spider,
 def run_wrapper(spider: Spider, queue: ReactorQueue, settings: Settings, delay: int, due_time: str, run_time: int,
                 crawls_amount: int):
     due_time_dt = None
-    if due_time is not None or run_time is not None:
+    if due_time is not None:
         due_time_dt = string_to_datetime(due_time)
-        if run_time is not None:
-            run_time_dt = get_timezone_aware_now() + datetime.timedelta(seconds=run_time)
-            if due_time_dt is None or run_time_dt < due_time_dt:
-                due_time_dt = run_time_dt
+    if run_time is not None:
+        run_time_dt = get_timezone_aware_now() + datetime.timedelta(seconds=run_time)
+        if due_time_dt is None or run_time_dt < due_time_dt:
+            due_time_dt = run_time_dt
 
     run(spider, queue, settings, delay, due_time=due_time_dt, crawls_amount=crawls_amount)
 
