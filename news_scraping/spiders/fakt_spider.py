@@ -8,9 +8,10 @@ from scrapy.spiders import SitemapSpider
 from pytz import timezone
 import re
 from utils import time_util, spider_util
+from settings.last_article_dates import set_last_scraped_date
 
 
-class FaktNewsSpider(SitemapSpider, spider_util.NewsSpider):
+class FaktNewsSpider(spider_util.SitemapWithCookiesSpider, spider_util.NewsSpider):
     name = 'fakt_spider'
     website = "fakt"
     delay_setting_name = "DELAY_FAKT"
@@ -75,7 +76,7 @@ class FaktNewsSpider(SitemapSpider, spider_util.NewsSpider):
 
     def close(self, reason):
         print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
-        time_util.set_last_scraped_date(self.last_scraped_date, self.website)
+        set_last_scraped_date(self.last_scraped_date, self.website)
 
 
 # class FaktNewsSpider(SitemapSpider):

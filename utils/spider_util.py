@@ -2,6 +2,11 @@ import scrapy
 from settings.last_article_dates import get_last_scraped_date, set_last_scraped_date
 from utils import time_util
 from scrapy.exceptions import CloseSpider
+from scrapy.spiders import SitemapSpider
+from scrapy.http import Request
+from scrapy.utils.sitemap import Sitemap, sitemap_urls_from_robots
+from scrapy.spiders.sitemap import iterloc, logger
+from settings.onet_cookies import get_onet_cookies
 
 
 class NewsSpider(scrapy.Spider):
@@ -58,3 +63,33 @@ class NewsSpider(scrapy.Spider):
             raise NotImplementedError
         else:
             print(f"Spider {self.name} closed")
+
+
+class SitemapWithCookiesSpider(SitemapSpider):
+    def _parse_sitemap(self, response):
+        if response.url.endswith('/robots.txt'):
+            for url in sitemap_urls_from_robots(response.text, base_url=response.url):
+                onet_cookies = get_onet_cookies()
+                yield Request(url, callback=self._parse_sitemap, cookies=onet_cookies)
+        else:
+            body = self._get_sitemap_body(response)
+            if body is None:
+                logger.warning("Ignoring invalid sitemap: %(response)s",
+                               {'response': response}, extra={'spider': self})
+                return
+
+            s = Sitemap(body)
+            it = self.sitemap_filter(s)
+
+            if s.type == 'sitemapindex':
+                for loc in iterloc(it, self.sitemap_alternate_links):
+                    if any(x.search(loc) for x in self._follow):
+                        onet_cookies = get_onet_cookies()
+                        yield Request(loc, callback=self._parse_sitemap, cookies=onet_cookies)
+            elif s.type == 'urlset':
+                for loc in iterloc(it, self.sitemap_alternate_links):
+                    for r, c in self._cbs:
+                        if r.search(loc):
+                            onet_cookies = get_onet_cookies()
+                            yield Request(loc, callback=c, cookies=onet_cookies)
+                            break
