@@ -1,11 +1,5 @@
-import datetime
-
-import scrapy
 from utils import spider_util, time_util
-from scrapy.exceptions import CloseSpider
 
-
-# test = response.css(".radiozet-footer__top a::attr('href')").getall()
 
 class CloseCategory(Exception):
     """Stop crawling category"""

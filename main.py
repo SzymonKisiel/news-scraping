@@ -6,6 +6,7 @@ from modules.set_delay import set_delay
 from modules.get_delay import get_delay
 from modules.search import search_websites
 from modules.test import test
+from modules.update_cookies import update_cookies
 from utils.websites_util import websites
 
 
@@ -63,6 +64,9 @@ def main():
     get_delay_group = get_delay_cmd.add_mutually_exclusive_group(required=True)
     get_delay_group.add_argument('--websites', type=str, nargs='+', choices=websites)
     get_delay_group.add_argument('--all', action='store_true')
+
+    # test-cookies
+    subparser.add_parser('update-cookies')
 
     # parse
     args = parser.parse_args()
@@ -122,6 +126,8 @@ def main():
             print(f"{website}: {get_delay(website)}")
     elif args.command == 'test':
         test()
+    elif args.command == 'update-cookies':
+        update_cookies()
 
 
 if __name__ == '__main__':

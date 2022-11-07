@@ -1,11 +1,4 @@
-import scrapy
-import re
-from scrapy.spiders import SitemapSpider
-
-from datetime import datetime
-from scrapy.spiders import SitemapSpider
-
-from pytz import timezone
+import datetime
 import re
 from utils import time_util, spider_util
 from settings.last_article_dates import set_last_scraped_date

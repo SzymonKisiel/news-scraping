@@ -13,8 +13,6 @@ cookies_path = Path(cookies_path_dir, 'onet_cookies.json')
 
 
 def renew_onet_cookies():
-    print('test')
-
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("window-size=1400,2100")
