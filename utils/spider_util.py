@@ -1,6 +1,12 @@
 import scrapy
+from settings.last_article_dates import get_last_scraped_date, set_last_scraped_date
 from utils import time_util
 from scrapy.exceptions import CloseSpider
+from scrapy.spiders import SitemapSpider
+from scrapy.http import Request
+from scrapy.utils.sitemap import Sitemap, sitemap_urls_from_robots
+from scrapy.spiders.sitemap import iterloc, logger
+from settings.onet_cookies import get_onet_cookies
 
 
 class NewsSpider(scrapy.Spider):
@@ -11,7 +17,7 @@ class NewsSpider(scrapy.Spider):
 
     def __init__(self, category=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.last_crawl_date = time_util.get_last_scraped_date(self.website)
+        self.last_crawl_date = get_last_scraped_date(self.website)
         self.last_scraped_date = self.last_crawl_date
 
         print(f"Spider {self.name} started")
@@ -39,6 +45,7 @@ class NewsSpider(scrapy.Spider):
     def parse_article_datetime(self, response):
         published_at = self.extract_publish_date(response)
         dt = time_util.string_to_datetime(published_at, self.website)
+
         if dt <= self.last_crawl_date:
             raise CloseSpider("Reached old articles")
         else:
@@ -51,6 +58,38 @@ class NewsSpider(scrapy.Spider):
     def closed(self, reason):
         if reason == "Reached old articles":
             print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
-            time_util.set_last_scraped_date(self.last_scraped_date, self.website)
+            set_last_scraped_date(self.last_scraped_date, self.website)
         elif reason == "Not implemented":
             raise NotImplementedError
+        else:
+            print(f"Spider {self.name} closed")
+
+
+class SitemapWithCookiesSpider(SitemapSpider):
+    def _parse_sitemap(self, response):
+        if response.url.endswith('/robots.txt'):
+            for url in sitemap_urls_from_robots(response.text, base_url=response.url):
+                onet_cookies = get_onet_cookies()
+                yield Request(url, callback=self._parse_sitemap, cookies=onet_cookies)
+        else:
+            body = self._get_sitemap_body(response)
+            if body is None:
+                logger.warning("Ignoring invalid sitemap: %(response)s",
+                               {'response': response}, extra={'spider': self})
+                return
+
+            s = Sitemap(body)
+            it = self.sitemap_filter(s)
+
+            if s.type == 'sitemapindex':
+                for loc in iterloc(it, self.sitemap_alternate_links):
+                    if any(x.search(loc) for x in self._follow):
+                        onet_cookies = get_onet_cookies()
+                        yield Request(loc, callback=self._parse_sitemap, cookies=onet_cookies)
+            elif s.type == 'urlset':
+                for loc in iterloc(it, self.sitemap_alternate_links):
+                    for r, c in self._cbs:
+                        if r.search(loc):
+                            onet_cookies = get_onet_cookies()
+                            yield Request(loc, callback=c, cookies=onet_cookies)
+                            break
