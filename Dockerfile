@@ -22,8 +22,11 @@ RUN apt-get -y update \
 # Download the Chrome Driver and unzip it into /usr/local/bin directory
 RUN wget -N http://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip -P /tmp
 RUN unzip /tmp/chromedriver_linux64.zip chromedriver -d /usr/local/bin/
+
 # Set display port as an environment variable
 ENV DISPLAY=:99
+# Setup IS_DOCKER variable
+ENV IS_DOCKER Yes
 
 # Add sources
 ADD requirements.txt /application/
