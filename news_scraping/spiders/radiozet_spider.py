@@ -1,4 +1,5 @@
 from utils import spider_util, time_util
+from settings.last_article_dates import set_last_scraped_date
 
 
 class CloseCategory(Exception):
@@ -88,4 +89,4 @@ class RadiozetNewsSpider(spider_util.NewsSpider):
 
     def closed(self, reason):
         print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
-        time_util.set_last_scraped_date(self.last_scraped_date, self.website)
+        set_last_scraped_date(self.last_scraped_date, self.website)
