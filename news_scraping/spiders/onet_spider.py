@@ -58,7 +58,7 @@ class OnetNewsSpider(NewsSpider):
 
         yield {
             'url': response.url,
-            'publishedAt': published_at_dt.isoformat(),
+            'published_at': published_at_dt.isoformat(),
             'title': self.extract_with_css(response, "h1.mainTitle ::text"),
             'author': self.extract_all_with_css(response, ".authDesc ::text", ".authorItem ::text"),
             'subtitle': self.extract_all_with_css(response, "#lead ::text"),

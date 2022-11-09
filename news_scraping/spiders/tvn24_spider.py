@@ -60,7 +60,7 @@ class Tvn24NewsSpider(spider_util.NewsSpider):
         dt = self.parse_article_datetime(response)
         yield {
             'url': response.url,
-            'publishedAt': dt.isoformat(),
+            'published_at': dt.isoformat(),
             'title': self.extract_with_css(response, "h1.heading ::text"),
             'author': self.extract_with_css(response, "div.author-first-name ::text"),
             'subtitle': self.extract_with_css(response, ".article-element--lead_text ::text"),

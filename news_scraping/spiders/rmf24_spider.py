@@ -38,7 +38,7 @@ class Rmf24NewsSpider(spider_util.NewsSpider):
         dt = self.parse_article_datetime(response)
         yield {
             'url': response.url,
-            'publishedAt': dt.isoformat(),
+            'published_at': dt.isoformat(),
             'title': self.extract_with_css(response, "h1.article-title ::text"),
             'author': self.extract_all_with_css(".isAutor ::text"),
             'subtitle': self.extract_with_css(response, "p.article-lead ::text"),
@@ -46,7 +46,7 @@ class Rmf24NewsSpider(spider_util.NewsSpider):
         }
         # yield {
         #     'url': response.url,
-        #     'publishedAt': publishedAt,
+        #     'published_at': published_at,
         #     'title': extract_with_css("h1.article-title ::text"),
         #     'author': extract_all_with_css(".isAutor ::text"),
         #     'subtitle': extract_with_css("p.article-lead ::text"),

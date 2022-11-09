@@ -75,7 +75,7 @@ class RadiozetNewsSpider(spider_util.NewsSpider):
         else:
             yield {
                 'url': response.url,
-                'publishedAt': dt.isoformat(),
+                'published_at': dt.isoformat(),
                 'title': self.extract_with_css(response, "h1.full__header__title ::text"),
                 'author': self.extract_all_with_css(response, "div.info-header__author ::text"),
                 'subtitle': self.extract_all_with_css(response, "div.full__article__lead ::text"),

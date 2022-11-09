@@ -32,7 +32,7 @@ class FaktNewsSpider(spider_util.SitemapWithCookiesSpider, spider_util.NewsSpide
         for entry in entries:
             loc = entry['loc']
             if re.search(self.date_sitemap_regex, loc):
-                date_time = datetime.strptime(loc, self.date_sitemap_format)
+                date_time = datetime.datetime.strptime(loc, self.date_sitemap_format)
                 if date_time.date() >= dt.date():
                     # print(date_time, "=", dt)
                     yield entry
@@ -40,9 +40,9 @@ class FaktNewsSpider(spider_util.SitemapWithCookiesSpider, spider_util.NewsSpide
                 yield entry
 
     def parse(self, response, **kwargs):
-        # 'publishedAt': self.extract_with_css(response, "div.article-date utils ::attr(datetime)"),
+        # 'published_at': self.extract_with_css(response, "div.article-date utils ::attr(datetime)"),
         # yield {
-        #        'publishedAt': self.extract_with_css(response, "div.article-date time ::attr(datetime)"),
+        #        'published_at': self.extract_with_css(response, "div.article-date time ::attr(datetime)"),
         #        'url': response.url
         #        }
         published_at_str = self.extract_publish_date(response)
@@ -57,7 +57,7 @@ class FaktNewsSpider(spider_util.SitemapWithCookiesSpider, spider_util.NewsSpide
             self.last_scraped_date = published_at_dt
         yield {
             'url': response.url,
-            'publishedAt': published_at_dt.isoformat(),
+            'published_at': published_at_dt.isoformat(),
             'title': self.extract_with_css(response, ".article-title ::text"),
             'author': "",
             'subtitle': self.extract_all_with_css(response, ".article-lead ::text"),
@@ -91,7 +91,7 @@ class FaktNewsSpider(spider_util.SitemapWithCookiesSpider, spider_util.NewsSpide
 #
 #         yield {
 #             'url': response.url,
-#             'publishedAt': extract_with_css("div.article-date utils ::attr(datetime)"),
+#             'published_at': extract_with_css("div.article-date utils ::attr(datetime)"),
 #             'title': extract_with_css("h1.article-title ::text"),
 #             'author': "",
 #             'subtitle': extract_all_with_css("div.article-lead ::text"),
