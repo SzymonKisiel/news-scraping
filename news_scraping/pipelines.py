@@ -29,4 +29,5 @@ class ArticlesPipeline:
     def process_item(self, item, spider):
         a = Article(item=item)
         insert_article(self.cnx, spider.website, a)
+
         return item

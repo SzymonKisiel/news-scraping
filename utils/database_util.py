@@ -65,7 +65,7 @@ def insert_article(cnx, website: str, a: article):
             'text': a.text,
         }
         cursor.execute(add_item, data)
-        print(f"Inserted article with id {cursor.lastrowid}")
+        # print(f"Inserted article with id {cursor.lastrowid}")
 
         cnx.commit()
         cursor.close()
