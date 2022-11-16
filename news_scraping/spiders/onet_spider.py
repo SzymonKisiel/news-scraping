@@ -1,6 +1,5 @@
 import datetime
-
-import scrapy
+from pytz import timezone
 
 from utils.spider_util import NewsSpider
 from utils.time_util import string_to_datetime
