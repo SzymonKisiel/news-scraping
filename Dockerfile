@@ -31,6 +31,7 @@ ENV IS_DOCKER Yes
 # Add sources
 ADD requirements.txt /application/
 ADD main.py /application/
+ADD model /application/model
 ADD modules /application/modules
 ADD news_scraping /application/news_scraping
 ADD news_scraping/spiders /application/news_scraping/spiders
