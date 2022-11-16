@@ -39,7 +39,7 @@ def run(spider: Spider,
         reactor.callLater(delay, run, spider, queue, settings, delay, crawls_amount, due_time, i + 1)
 
     # log crawl start
-    print(f"[{datetime.datetime.now().strftime('%m/%d/%Y, %H:%M:%S.%f')}] {spider.name} run {i}")
+    print(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {spider.name} run {i + 1}")
 
     # run crawler
     runner = CrawlerProcess(settings)
@@ -75,4 +75,3 @@ def crawl_websites(websites: list[str], due_time: str = None, run_time: int = No
 
         run_wrapper(crawler, queue, settings, delay, due_time=due_time, run_time=run_time, crawls_amount=crawls_amount)
     reactor.run()
-
