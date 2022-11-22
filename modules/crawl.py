@@ -1,4 +1,7 @@
 import datetime
+from multiprocessing import Process
+from threading import Thread
+
 from utils.time_util import string_to_datetime, get_timezone_aware_now
 from twisted.internet import defer
 from scrapy.crawler import CrawlerProcess
@@ -64,7 +67,7 @@ def run_wrapper(spider: Spider, queue: ReactorQueue, settings: Settings, delay: 
     run(spider, queue, settings, delay, due_time=due_time_dt, crawls_amount=crawls_amount)
 
 
-def crawl_websites(websites: list[str], due_time: str = None, run_time: int = None, crawls_amount: int = None):
+def _crawl_websites(websites: list[str], due_time: str = None, run_time: int = None, crawls_amount: int = None):
     queue = ReactorQueue(len(websites))
     for website in websites:
         crawler = website_name_to_crawler(website)
@@ -75,3 +78,14 @@ def crawl_websites(websites: list[str], due_time: str = None, run_time: int = No
 
         run_wrapper(crawler, queue, settings, delay, due_time=due_time, run_time=run_time, crawls_amount=crawls_amount)
     reactor.run()
+
+
+def crawl_websites(websites: list[str], due_time: str = None, run_time: int = None, crawls_amount: int = None):
+    p = Process(target=_crawl_websites, args=(websites, due_time, run_time, crawls_amount))
+    p.start()
+    p.join()
+
+
+def async_crawl_websites(websites: list[str], due_time: str = None, run_time: int = None, crawls_amount: int = None):
+    thread = Thread(target=crawl_websites, args=(websites, due_time, run_time, crawls_amount))
+    thread.start()
