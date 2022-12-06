@@ -31,14 +31,14 @@ ENV IS_DOCKER Yes
 # Add sources
 ADD requirements.txt /application/
 ADD main.py /application/
-ADD console_app /application/console_app
-ADD flask_server /application/flask_server
-ADD model /application/model
-ADD modules /application/modules
-ADD news_scraping /application/news_scraping
-ADD news_scraping/spiders /application/news_scraping/spiders
-ADD settings /application/settings
-ADD utils /application/utils
+ADD ../console_app /application/console_app
+ADD ../flask_server /application/flask_server
+ADD ../model /application/model
+ADD ../modules /application/modules
+ADD ../news_scraping /application/news_scraping
+ADD ../news_scraping/spiders /application/news_scraping/spiders
+ADD ../settings /application/settings
+ADD ../utils /application/utils
 
 RUN pip install -r /application/requirements.txt
 RUN pip install gunicorn
