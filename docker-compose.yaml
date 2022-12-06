@@ -1,0 +1,30 @@
+version: '2.9'
+services:
+  command-handler:
+#    image: network-test-client
+    build: command-handler
+    ports:
+      - "5001:5001"
+    networks:
+      - test-network
+    env_file:
+      - command-handler/.env.prod
+#    environment:
+#      - SCRAPER_API='http:'
+#      - APP_PORT=5001
+  scraper:
+#    image: network-test-server
+    build: scraper
+    ports:
+      - "5002:5002"
+    networks:
+      - test-network
+  ui:
+    build: frontend
+    ports:
+      - "8080:80"
+    networks:
+      - test-network
+networks:
+  test-network:
+    name: custom_network
