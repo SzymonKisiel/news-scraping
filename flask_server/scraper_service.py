@@ -1,39 +1,12 @@
 import logging
 
-from typing import List, Optional
-from pydantic import BaseModel
-
-from modules.crawl import crawl_websites, async_crawl_websites
+from modules.crawl import async_crawl_websites
 from modules.set_scraping_start import set_scraping_start
 from modules.get_scraping_start import get_scraping_start
 from modules.set_delay import set_delay
 from modules.get_delay import get_delay
 from utils.websites_util import websites
-
-
-class CrawlRequest(BaseModel):
-    websites: List[str] = []
-    crawls_amount: Optional[int]
-    due_time: Optional[str]
-    run_time: Optional[int]
-
-
-class GetDelayRequest(BaseModel):
-    websites: List[str]
-
-
-class GetScrapingStartRequest(BaseModel):
-    websites: List[str]
-
-
-class SetDelayRequest(BaseModel):
-    websites: List[str]
-    delay: int
-
-
-class SetScrapingStartRequest(BaseModel):
-    websites: List[str]
-    date: str
+from flask_server.models import *
 
 
 class ScraperService:

@@ -1,138 +1,132 @@
-import json
-from threading import Thread
-
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response, jsonify, Blueprint
 from pydantic import ValidationError
+from flask_server.scraper_service import *
 
-from modules import crawl as crawl_module
-from flask_server.scraper_service import CrawlRequest, SetScrapingStartRequest, ScraperService, SetDelayRequest, GetDelayRequest, GetScrapingStartRequest
+
+bp = Blueprint('route_prefix', __name__, template_folder='templates', url_prefix='/api/scraper')
 
 app = Flask(__name__)
-service = ScraperService(app.logger)
+
+# logger = app.logger
+
+logger = logging.getLogger('gunicorn.error')
+app.logger.handlers = logger.handlers
+app.logger.setLevel(logger.level)
+
+service = ScraperService(logger)
 
 
-@app.route('/')
+# Routes without prefix
+
+@bp.route('/')
 def hello():
     return 'Scraper service'
 
 
-@app.route('/test1')
-def test_start():
-    websites = ['fakt']
+# Routes with prefix /api/scraper
 
-    p = crawl_module.crawl_websites(websites, crawls_amount=1)
-    p.join()
-
-    return 'started'
-
-
-@app.route('/test2')
-def test_start2():
-    def do_work(value):
-        # do something that takes a long time
-        import time
-        print('started work')
-        time.sleep(value)
-        print('done work')
-
-    thread = Thread(target=do_work, kwargs={'value': request.args.get('value', 20)})
-    thread.start()
-    return 'started'
-
-
-@app.route('/test3')
-def test_start3():
-    def do_work(value):
-        print('started work')
-
-        websites = ['fakt']
-
-        p = crawl_module.crawl_websites(websites, crawls_amount=1)
-        p.join()
-
-        print('done work')
-
-    thread = Thread(target=do_work, kwargs={'value': request.args.get('value', 20)})
-    thread.start()
-    return 'started'
-
-
-@app.route('/test4')
-def test4():
-    websites = ['fakt']
-
-    crawl_module.async_crawl_websites(websites, crawls_amount=1)
-
-    return 'started'
-
-
-@app.route('/api/scraper/crawl', methods=['POST'])
+@bp.route('/crawl', methods=['POST'])
 def crawl():
     try:
         req = request.get_json()
         request_dto = CrawlRequest(**req)
     except ValidationError as e:
-        print(e.json())
-        return make_response("Validation error", 400)
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
 
     service.crawl(request_dto)
 
-    response = {'message': 'Crawl started', 'code': 'SUCCESS'}
+    response = {'message': 'Crawl started', 'code': 200}
     return make_response(jsonify(response), 200)
 
 
-@app.route('/api/scraper/get-delay', methods=['POST'])
+@bp.route('/get-delay', methods=['POST'])
 def get_delay():
     try:
         req = GetDelayRequest(**request.get_json())
     except ValidationError as e:
-        print(e.json())
-        return make_response("Validation error", 400)
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
 
     result = service.get_delay(req)
     return result
 
 
-@app.route('/api/scraper/get-scraping-start', methods=['POST'])
+@bp.route('/get-scraping-start', methods=['POST'])
 def get_scraping_start():
     try:
         req = GetScrapingStartRequest(**request.get_json())
     except ValidationError as e:
-        print(e.json())
-        return make_response("Validation error", 400)
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
 
     result = service.get_scraping_start(req)
     return result
 
 
-@app.route('/api/scraper/get-websites', methods=['GET'])
+@bp.route('/get-websites', methods=['GET'])
 def get_websites():
-    return service.get_websites()
+    response = {
+        "websites": service.get_websites()
+    }
+    return make_response(jsonify(response), 200)
 
 
-@app.route('/api/scraper/set-delay', methods=['POST'])
+@bp.route('/set-delay', methods=['POST'])
 def set_delay():
     try:
         req = SetDelayRequest(**request.get_json())
     except ValidationError as e:
-        print(e.json())
-        return make_response("Validation error", 400)
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
 
     service.set_delay(req)
 
-    response = {'message': 'Done', 'code': 'SUCCESS'}
+    response = {'message': 'Done', 'code': 200}
     return make_response(jsonify(response), 200)
 
 
-@app.route('/api/scraper/set-scraping-start', methods=['POST'])
+@bp.route('/set-scraping-start', methods=['POST'])
 def set_scraping_start():
     try:
         req = SetScrapingStartRequest(**request.get_json())
     except ValidationError as e:
-        print(e.json())
-        return make_response("Validation error", 400)
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
 
     service.set_scraping_start(req)
 
-    response = {'message': 'Done', 'code': 'SUCCESS'}
+    response = {'message': 'Done', 'code': 200}
     return make_response(jsonify(response), 200)
+
+
+app.register_blueprint(bp)
+
+
+def create_app():
+    return app

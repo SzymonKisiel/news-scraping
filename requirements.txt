@@ -1,7 +1,9 @@
-pytz==2022.6
-Scrapy==2.7.1
-Twisted==22.10.0
+pytz~=2022.6
+scrapy~=2.7.1
+twisted~=22.10.0
 itemadapter~=0.7.0
-pandas~=1.5.1
-selenium==4.6.0
+pandas==1.5.2
+selenium==4.7.2
 mysql-connector-python~=8.0.31
+flask==2.2.2
+pydantic~=1.10.2

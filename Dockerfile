@@ -31,6 +31,8 @@ ENV IS_DOCKER Yes
 # Add sources
 ADD requirements.txt /application/
 ADD main.py /application/
+ADD console_app /application/console_app
+ADD flask_server /application/flask_server
 ADD model /application/model
 ADD modules /application/modules
 ADD news_scraping /application/news_scraping
@@ -39,4 +41,9 @@ ADD settings /application/settings
 ADD utils /application/utils
 
 RUN pip install -r /application/requirements.txt
-ENTRYPOINT  [ "python", "main.py" ]
+RUN pip install gunicorn
+
+EXPOSE 5002
+
+#ENTRYPOINT  [ "python", "main.py" ]
+ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:5002", "--log-level", "debug", "main:app" ]
