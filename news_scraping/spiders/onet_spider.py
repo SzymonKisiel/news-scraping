@@ -5,7 +5,6 @@ from utils.spider_util import NewsSpider
 from utils.time_util import string_to_datetime
 from settings.onet_cookies import get_onet_cookies
 from modules.set_scraping_start import set_last_scraped_date
-from pytz import timezone
 
 
 class OnetNewsSpider(NewsSpider):
@@ -55,6 +54,14 @@ class OnetNewsSpider(NewsSpider):
         if published_at_dt > self.last_scraped_date:
             self.last_scraped_date = published_at_dt
 
+        # item = ArticleItem()
+        # item['url'] = response.url.extract(),
+        # item['published_at'] = published_at_dt.isoformat(),
+        # item['title'] = self.extract_with_css(response, "h1.mainTitle ::text"),
+        # item['author'] = self.extract_all_with_css(response, ".authDesc ::text", ".authorItem ::text"),
+        # item['subtitle'] = self.extract_all_with_css(response, "#lead ::text"),
+        # item['text'] = self.extract_all_with_css(response, ".articleDetail p ::text, .articleDetail h2 ::text")
+        # yield item
         yield {
             'url': response.url,
             'published_at': published_at_dt.isoformat(),

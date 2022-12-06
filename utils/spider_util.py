@@ -61,8 +61,9 @@ class NewsSpider(scrapy.Spider):
             set_last_scraped_date(self.last_scraped_date, self.website)
         elif reason == "Not implemented":
             raise NotImplementedError
-        else:
-            print(f"Spider {self.name} closed")
+        # else:
+        #     print(f"Spider {self.name} closed")
+        # TODO rethrow?
 
 
 class SitemapWithCookiesSpider(SitemapSpider):
