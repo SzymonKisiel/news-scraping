@@ -1,8 +1,8 @@
-version: '2.9'
+version: '3.8'
 services:
   command-handler:
 #    image: network-test-client
-    build: command-handler
+    build: ./command-handler
     ports:
       - "5001:5001"
     networks:
@@ -14,13 +14,28 @@ services:
 #      - APP_PORT=5001
   scraper:
 #    image: network-test-server
-    build: scraper
+    build: ./scraper
     ports:
       - "5002:5002"
     networks:
       - test-network
+    volumes:
+      - ./data:/application/data
+  scraper_db:
+    image: mysql:8.0.31-debian
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql:/var/lib/mysql
+      - mysql_config:/etc/mysql
+      - ./sql_init:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=p@ssw0rd1
+    networks:
+      - test-network
   ui:
-    build: frontend
+    build: ./frontend
     ports:
       - "8080:80"
     networks:
@@ -28,3 +43,7 @@ services:
 networks:
   test-network:
     name: custom_network
+volumes:
+  # scraper_config:
+  mysql:
+  mysql_config:

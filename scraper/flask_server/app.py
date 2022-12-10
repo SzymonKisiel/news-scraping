@@ -1,7 +1,7 @@
 from flask import Flask, request, make_response, jsonify, Blueprint
 from pydantic import ValidationError
 from flask_server.scraper_service import *
-
+from utils.env_util import is_docker
 
 bp = Blueprint('route_prefix', __name__, template_folder='templates', url_prefix='/api/scraper')
 
@@ -13,7 +13,12 @@ logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = logger.handlers
 app.logger.setLevel(logger.level)
 
-service = ScraperService(logger)
+flags = {}
+if is_docker():
+    flags['save_to_database'] = True
+    flags['save_to_json'] = False
+
+service = ScraperService(logger, flags)
 
 
 # Routes without prefix

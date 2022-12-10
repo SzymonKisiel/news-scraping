@@ -12,7 +12,7 @@ def get_mysql_db_connection():
 
     if is_docker():
         host_config = {
-            'host': 'mysqldb'
+            'host': 'scraper_db'
         }
     else:
         host_config = {

@@ -14,9 +14,17 @@ export class CommandService {
 
   apiPath = '/api/command-handler/'
 
-  crawl() {
+  crawl(website: string) {
     const action = 'crawl'
     const url = this.apiUrl + this.apiPath + action
+    const body = {
+      "websites": [
+        website
+      ],
+      // "websites": Constants.WEBSITES,
+      "crawls_amount": 1
+    }
+    return this.httpClient.post(url, body)
   }
 
   
@@ -32,6 +40,10 @@ export class CommandService {
   getAllScrapingStarts() {
     const action = 'get-scraping-start'
     const url = this.apiUrl + this.apiPath + action
+    const body = {
+      "websites": Constants.WEBSITES
+    }
+    return this.httpClient.post(url, body)
   }
   
   getWebsites() {

@@ -12,8 +12,9 @@ from flask_server.models import *
 class ScraperService:
     logger: logging.Logger
 
-    def __init__(self, logger: logging.Logger):
+    def __init__(self, logger: logging.Logger, flags=None):
         self.logger = logger
+        self.flags = flags
 
     def crawl(self, request: CrawlRequest):
         self.logger.debug("crawl")
@@ -21,7 +22,8 @@ class ScraperService:
             request.websites,
             due_time=request.due_time,
             run_time=request.run_time,
-            crawls_amount=request.crawls_amount)
+            crawls_amount=request.crawls_amount,
+            flags=self.flags)
 
     def get_delay(self, request: GetDelayRequest):
         self.logger.debug("get_delay")

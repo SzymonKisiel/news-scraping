@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Constants } from 'src/app/core/model/constants';
 import { CommandService } from 'src/app/core/services/command-service/command.service';
 
 @Component({
@@ -11,6 +12,8 @@ export class TestComponent implements OnInit {
 
   delays = {}
   websites = {}
+  last_dates = {}
+  websites_const = Constants.WEBSITES
 
   ngOnInit(): void {
     console.log('init')
@@ -18,6 +21,20 @@ export class TestComponent implements OnInit {
     // console.log(websites)
     this.getAllWebsites()
     this.getAllDelays()
+    this.getLastScrapedDates()
+  }
+
+  crawl(website: string) {
+    console.log("crawl")
+
+    this.commandService.crawl(website).subscribe({
+      next: x => {
+        console.log('Observer got a next value: ')
+        console.log(x)
+      },
+      error: err => console.error('Observer got an error: ' + err),
+      complete: () => console.log('Observer got a complete notification')
+    })
   }
 
   getAllDelays() {
@@ -26,6 +43,18 @@ export class TestComponent implements OnInit {
         console.log('Observer got a next value: ')
         console.log(x)
         this.delays = x
+      },
+      error: err => console.error('Observer got an error: ' + err),
+      complete: () => console.log('Observer got a complete notification')
+    })
+  }
+
+  getLastScrapedDates() {
+    this.commandService.getAllScrapingStarts().subscribe({
+      next: x => {
+        console.log('Observer got a next value: ')
+        console.log(x)
+        this.last_dates = x
       },
       error: err => console.error('Observer got an error: ' + err),
       complete: () => console.log('Observer got a complete notification')
