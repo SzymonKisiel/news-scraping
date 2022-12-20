@@ -52,7 +52,7 @@ def get_mysql_db_connection():
 def insert_article(cnx, website: str, a: article):
     try:
         cursor = cnx.cursor()
-        add_item = ("INSERT INTO articles"
+        add_item = ("INSERT INTO article"
                     "(website, url, published_at, title, author, subtitle, text)"
                     "VALUES (%(website)s, %(url)s, %(published_at)s, %(title)s, %(author)s, %(subtitle)s, %(text)s)")
         data = {
