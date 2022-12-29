@@ -21,6 +21,12 @@ services:
       - test-network
     volumes:
       - ./data:/application/data
+  sentiment-analyser:
+    build: ./sentiment-analyser
+    ports:
+      - "5003:5003"
+    networks:
+      - test-network
   scraper_db:
     image: mysql:8.0.31-debian
     restart: always

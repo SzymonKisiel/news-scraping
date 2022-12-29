@@ -10,9 +10,9 @@ class ScraperService:
 
     def __init__(self, logger: logging.Logger):
         self.logger = logger
-        self.host = 'localhost'
+        # self.host = 'localhost'
         # self.host = 'scraper'
-        self.api_url = f'http://{self.host}:5002/api/scraper/'
+        # self.api_url = f'http://{self.host}:5002/api/scraper/'
         self.api_url = get_scraper_api()
 
     def crawl(self, request: CrawlRequest):

@@ -25,3 +25,20 @@ class SetDelayRequest(BaseModel):
 class SetScrapingStartRequest(BaseModel):
     websites: List[str]
     date: str
+
+
+class AnalyseRequest(BaseModel):
+    text: str
+
+
+class UpdateSentimentRequest(BaseModel):
+    search_term: str
+
+
+class AddClientRequest(BaseModel):
+    client_name: str
+
+
+class AddSearchTermRequest(BaseModel):
+    client_name: str
+    search_term: str

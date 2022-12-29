@@ -131,13 +131,14 @@ class SentimentRepository:
         }
         return self.__get_sentiments(query, data)
 
-    def update_all_sentiments(self, client_name, search_term):
-        pass
-        # TODO
+    def insert_sentiment(self, sentiment: Sentiment, connection=None):
+        self.logger.debug('insert_sentiment')
 
-    def insert_sentiment(self, sentiment: Sentiment):
         # Init connection
-        cnx = get_mysql_db_connection()
+        if connection is None:
+            cnx = get_mysql_db_connection()
+        else:
+            cnx = connection
         cursor = cnx.cursor()
 
         # Prepare statement and data
@@ -161,9 +162,11 @@ class SentimentRepository:
         cursor.execute(statement, data)
 
         # Make sure data is committed to the database and close the connection
-        cnx.commit()
+        if connection is None:
+            cnx.commit()
         cursor.close()
-        cnx.close()
+        if connection is None:
+            cnx.close()
 
     def count_sentiments(self, article_id, search_term_id) -> int:
         # Init connection

@@ -19,11 +19,17 @@ ADD docker_settings.py /application/settings.py
 ADD main.py /application/
 ADD settings.py /application/
 ADD database /application/database
+ADD models /application/models
 ADD services /application/services
 ADD utils /application/utils
 
 RUN pip install --no-cache-dir -r /application/requirements.txt
 RUN pip install gunicorn
+
+# Download sentencizer model
+RUN pip install -U pip setuptools wheel
+RUN pip install -U spacy
+RUN python -m spacy download pl_core_news_md
 
 EXPOSE 5001
 
