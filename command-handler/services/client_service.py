@@ -14,6 +14,9 @@ class ClientService:
         self.client_repository = ClientRepository(logger)
         self.search_term_repository = SearchTermRepository(logger)
 
+    def get_all(self):
+        return self.client_repository.get_all_clients()
+
     def add_client(self, request: AddClientRequest):
         self.client_repository.add_client(request.client_name)
 

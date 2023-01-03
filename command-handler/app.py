@@ -324,6 +324,17 @@ def get_all_search_terms():
     return make_response(jsonify(response), 200)
 
 
+@bp.route('get-all-clients', methods=['GET'])
+def get_all_clients():
+    clients = client_service.get_all()
+    clients_json = [client.to_dict() for client in clients]
+
+    response = {
+        "clients": clients_json
+    }
+    return make_response(jsonify(response), 200)
+
+
 app.register_blueprint(bp)
 
 

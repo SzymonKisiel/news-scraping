@@ -14,3 +14,9 @@ class Client:
         self.id = id
         self.name = name
         self.search_terms = search_terms
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
