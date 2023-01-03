@@ -32,6 +32,8 @@ RUN pip install -U spacy
 RUN python -m spacy download pl_core_news_md
 
 EXPOSE 5001
+# Setup IS_DOCKER environment variable
+ENV IS_DOCKER Yes
 
 #ENTRYPOINT  [ "python", "main.py" ]
 ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:5001", "--log-level", "debug", "main:app" ]
