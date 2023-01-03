@@ -1,3 +1,4 @@
+import json
 from typing import List
 from models.search_term import SearchTerm
 from models.article import Article
@@ -40,3 +41,17 @@ class Sentiment:
         self.neutral_score = neutral_score
         self.negative_score = negative_score
         self.overall_sentiment = overall_sentiment
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'article_id': self.article_id,
+            'article': self.article.to_dict(),
+            'search_term_id': self.search_term_id,
+            'search_term': self.search_term.to_dict(),
+            'sentence': self.sentence,
+            'positive_score': self.positive_score,
+            'neutral_score': self.neutral_score,
+            'negative_score': self.negative_score,
+            'overall_sentiment': self.overall_sentiment
+        }

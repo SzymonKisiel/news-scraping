@@ -31,3 +31,6 @@ class Article:
         self.subtitle = subtitle if subtitle is not None else ''
         self.text = text if text is not None else ''
         self.created_at = created_at
+
+    def to_dict(self):
+        return vars(self)

@@ -13,3 +13,6 @@ class SearchTerm:
         self.id = search_term_id
         self.search_term = search_term
         self.updated_sentiments_at = updated_sentiments_at
+
+    def to_dict(self):
+        return vars(self)

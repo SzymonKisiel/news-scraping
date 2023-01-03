@@ -1,3 +1,4 @@
+import json
 import logging
 from flask import Flask, request, make_response, jsonify, Blueprint
 from flask_cors import CORS
@@ -244,7 +245,11 @@ def add_client():
         app.logger.debug(response)
         return make_response(jsonify(response), 400)
 
-    client_service.add_client(req)
+    try:
+        client_service.add_client(req)
+    except DatabaseError as e:
+        print("Error: {}".format(e))
+        return {"message": e.msg}
 
     response = {'message': 'Done', 'code': 200}
     return make_response(jsonify(response), 200)
@@ -263,7 +268,11 @@ def add_search_term():
         app.logger.debug(response)
         return make_response(jsonify(response), 400)
 
-    client_service.add_search_term(req)
+    try:
+        client_service.add_search_term(req)
+    except DatabaseError as e:
+        print("Error: {}".format(e))
+        return {"message": e.msg}
 
     response = {'message': 'Done', 'code': 200}
     return make_response(jsonify(response), 200)
@@ -281,9 +290,16 @@ def get_all_sentiments():
         app.logger.debug(response)
         return make_response(jsonify(response), 400)
 
-    sentiment_service.get_all_by_search_term(search_term)
+    sentiments = sentiment_service.get_all_by_search_term(search_term)
+    sentiments_result = []
+    for sentiment in sentiments:
+        # sentiment_json = sentiment.to_json()
+        # sentiment_data = json.loads(sentiment_json)
+        sentiments_result.append(sentiment.to_dict())
 
-    response = {'message': 'Done', 'code': 200}
+    response = {
+        "sentiments": sentiments_result
+    }
     return make_response(jsonify(response), 200)
 
 

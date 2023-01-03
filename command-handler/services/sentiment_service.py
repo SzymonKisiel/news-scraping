@@ -50,7 +50,7 @@ class SentimentService:
         return last_created_at
 
     def get_all_by_search_term(self, search_term: str):
-        pass
+        return self.sentiment_repository.get_all_by_search_term_name(search_term)
 
     def __update_sentiments_for_term(self, term: SearchTerm):
         # Init connection
@@ -69,7 +69,7 @@ class SentimentService:
             sentences = self.__split_to_sentences(article.title, article.subtitle, article.text)
 
             # remove sentences without search term
-            # TODO
+            sentences = [sentence for sentence in sentences if term.search_term in sentence]
 
             # calculate sentiment for each sentence
             for sentence in sentences:

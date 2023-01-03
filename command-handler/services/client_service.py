@@ -15,7 +15,7 @@ class ClientService:
         self.search_term_repository = SearchTermRepository(logger)
 
     def add_client(self, request: AddClientRequest):
-        pass
+        self.client_repository.add_client(request.client_name)
 
     def add_search_term(self, request: AddSearchTermRequest):
-        pass
+        self.search_term_repository.add_search_term_to_client(request.client_name, request.search_term)
