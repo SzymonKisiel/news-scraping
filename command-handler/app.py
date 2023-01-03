@@ -27,6 +27,7 @@ from services.models import *
 #     consoleHandler.setLevel(level)
 #
 #     app.logger.addHandler(consoleHandler)
+from services.search_term_service import SearchTermService
 from services.sentiment_service import SentimentService
 
 bp = Blueprint('route_prefix', __name__, template_folder='templates', url_prefix='/api/command-handler')
@@ -48,6 +49,7 @@ scraper_service = ScraperService(app.logger)
 search_service = SearchService(app.logger)
 client_service = ClientService(app.logger)
 sentiment_service = SentimentService(app.logger)
+search_term_service = SearchTermService(app.logger)
 
 
 @bp.route('/')
@@ -293,12 +295,31 @@ def get_all_sentiments():
     sentiments = sentiment_service.get_all_by_search_term(search_term)
     sentiments_result = []
     for sentiment in sentiments:
-        # sentiment_json = sentiment.to_json()
-        # sentiment_data = json.loads(sentiment_json)
         sentiments_result.append(sentiment.to_dict())
 
     response = {
         "sentiments": sentiments_result
+    }
+    return make_response(jsonify(response), 200)
+
+
+@bp.route('get-all-search-terms', methods=['GET'])
+def get_all_search_terms():
+    client_name = request.args.get('client_name')
+    if client_name is None:
+        response = {
+            'code': 400,
+            'message': 'Invalid parameters',
+            'detail': '"client_name" parameter is required'
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
+
+    search_terms = search_term_service.get_all_by_client_name(client_name)
+    search_term_names = [term.search_term for term in search_terms]
+
+    response = {
+        "search_terms": search_term_names
     }
     return make_response(jsonify(response), 200)
 

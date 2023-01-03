@@ -34,8 +34,11 @@ class SentimentService:
         self.sentiment_analyse_service = SentimentAnalyseService(logger)
 
     def __split_to_sentences(self, *texts) -> List[str]:
-        text = ' '.join(texts)
-        return self.sentencizer.sentecize(text)
+        sentences = []
+        for text in texts:
+            text_sentences = self.sentencizer.sentecize(text)
+            sentences.extend(text_sentences)
+        return sentences
 
     def __get_last_created_at(self, articles: List[Article]) -> datetime:
         if not articles:
@@ -101,14 +104,14 @@ class SentimentService:
             self.__update_sentiments_for_term(term)
 
     def test(self):
-        print('START MEGA TEST')
+        # print('START MEGA TEST')
         # self.update()
-        print('STOP MEGA TEST')
-        # print('START SENTENCE TEST')
-        # sentences = self.__split_to_sentences("Hejka. Chciałbym się dowiedzieć kiedy prof. Stanisław będzie dostępny, kiedy można się z nim kontaktować lub cokolwiek. Proszę, powiedz mi.     Teraz.", "McDonalds jest dziwne.")
-        # for sentence in sentences:
-        #     print(sentence)
-        # print('END SENTENCE TEST')
+        # print('STOP MEGA TEST')
+        print('START SENTENCE TEST')
+        sentences = self.__split_to_sentences("Hejka. Chciałbym się dowiedzieć kiedy prof. Stanisław będzie dostępny, kiedy można się z nim kontaktować lub cokolwiek. Proszę, powiedz mi.     Teraz.", "McDonalds jest dziwne", "Test")
+        for sentence in sentences:
+            print(sentence)
+        print('END SENTENCE TEST')
         #
         # print('START SENTIMENT TEST')
         # for sentence in sentences:
