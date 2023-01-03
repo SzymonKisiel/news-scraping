@@ -24,8 +24,8 @@ class SentimentRepository:
         sentiments: List[SearchTerm] = []
         for (id, article_id, search_term_id, sentence,
              positive_score, neutral_score, negative_score, overall_sentiment,
-             art_url, art_website, art_published_at, art_title, art_author, art_subtitle, art_text,
-             search_term_name) in cursor:
+             art_url, art_website, art_published_at, art_title, art_author, art_subtitle, art_text, art_created_at,
+             search_term_name, search_term_updated_at) in cursor:
             self.logger.debug(f"{id}: {art_title}, {positive_score}, {neutral_score}, {negative_score}")
             sentiment = Sentiment(
                 id=id,
@@ -38,12 +38,14 @@ class SentimentRepository:
                     title=art_title,
                     author=art_author,
                     subtitle=art_subtitle,
-                    text=art_text
+                    text=art_text,
+                    created_at=art_created_at
                 ),
                 search_term_id=search_term_id,
                 search_term=SearchTerm(
                     search_term_id,
-                    search_term=search_term_name
+                    search_term=search_term_name,
+                    updated_sentiments_at=search_term_updated_at
                 ),
                 sentence=sentence,
                 positive_score=positive_score,
@@ -81,17 +83,17 @@ class SentimentRepository:
     def get_all_by_client_name(self, client_name):
         self.logger.debug(f"get_all_by_client_name: {client_name}")
         query = """
-                    SELECT s.id, s.article_id, s.search_term_id, s.sentence, s.positive_score, s.neutral_score, s.negative_score, s.overall_sentiment,
-                        a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`,
-                        st.term
-                    FROM news_scraping_db.sentiment s
-                    JOIN news_scraping_db.sentiment_label sl ON s.overall_sentiment = sl.id
-                    JOIN news_scraping_db.article a ON s.article_id = a.id
-                    JOIN news_scraping_db.search_term st ON s.search_term_id = st.id
-                    JOIN news_scraping_db.client_search_term cst ON st.id = cst.search_term_id
-                    JOIN news_scraping_db.client c ON cst.client_id = c.id
-                    WHERE c.name = %(client_name)s;
-                """
+            SELECT s.id, s.article_id, s.search_term_id, s.sentence, s.positive_score, s.neutral_score, s.negative_score, s.overall_sentiment,
+                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`,
+                st.term
+            FROM news_scraping_db.sentiment s
+            JOIN news_scraping_db.sentiment_label sl ON s.overall_sentiment = sl.id
+            JOIN news_scraping_db.article a ON s.article_id = a.id
+            JOIN news_scraping_db.search_term st ON s.search_term_id = st.id
+            JOIN news_scraping_db.client_search_term cst ON st.id = cst.search_term_id
+            JOIN news_scraping_db.client c ON cst.client_id = c.id
+            WHERE c.name = %(client_name)s;
+        """
         data = {
             "client_name": client_name
         }
@@ -118,8 +120,8 @@ class SentimentRepository:
         self.logger.debug(f"get_all_by_search_term_name: {search_term_name}")
         query = """
             SELECT s.id, s.article_id, s.search_term_id, s.sentence, s.positive_score, s.neutral_score, s.negative_score, s.overall_sentiment,
-                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`,
-                st.term 
+                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`, a.created_at,
+                st.term, st.updated_sentiments_at
             FROM news_scraping_db.sentiment s
             JOIN news_scraping_db.sentiment_label sl ON s.overall_sentiment = sl.id
             JOIN news_scraping_db.article a ON s.article_id = a.id
