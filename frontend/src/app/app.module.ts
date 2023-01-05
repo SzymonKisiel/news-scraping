@@ -5,16 +5,33 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { TestComponent } from './components/test/test.component';
+import { MaterialTestComponent } from './components/material-test/material-test.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ClientsComponent } from './components/clients/clients.component';
+import { SearchTermsComponent } from './components/search-terms/search-terms.component';
+import { SentimentsComponent } from './components/sentiments/sentiments.component';
+import { ScraperComponent } from './components/scraper/scraper.component';
+import { ArticlesComponent } from './components/articles/articles.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TestComponent
+    TestComponent,
+    MaterialTestComponent,
+    ClientsComponent,
+    SearchTermsComponent,
+    SentimentsComponent,
+    ScraperComponent,
+    ArticlesComponent
   ],
   imports: [
     CoreModule,
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

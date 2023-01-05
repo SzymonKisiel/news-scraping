@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Constants } from '../../model/constants';
 import { API_URL } from '../../tokens';
+import { Clients } from '../../model/client';
+import { SearchTerms } from '../../model/search_term';
 
 @Injectable({
   providedIn: 'root'
@@ -13,52 +15,54 @@ export class CommandService {
     private httpClient: HttpClient) { }
 
   apiPath = '/api/command-handler/'
+  
+  getAllClients() {
+    const action = 'get-all-clients'
+    const url = this.apiUrl + this.apiPath + action
+    
+    return this.httpClient.get<Clients>(url)
+  }
 
-  crawl(website: string) {
-    const action = 'crawl'
+  getAllSearchTerms(client_name: string) {
+    const action = 'get-all-search-terms'
+    const url = this.apiUrl + this.apiPath + action
+
+    return this.httpClient.get<SearchTerms>(url, {
+      params: {
+        client_name: client_name
+      }
+    })
+  }
+
+  getAllSearchTermsByClientId(client_id: number) {
+    const action = 'get-all-search-terms'
+    const url = this.apiUrl + this.apiPath + action
+
+    return this.httpClient.get<SearchTerms>(url, {
+      params: {
+        client_id: client_id
+      }
+    })
+  }
+  
+  addClient(new_client_name: string) {
+    const action = 'add-client'
     const url = this.apiUrl + this.apiPath + action
     const body = {
-      "websites": [
-        website
-      ],
-      // "websites": Constants.WEBSITES,
-      "crawls_amount": 1
+      "client_name": new_client_name
     }
+    
     return this.httpClient.post(url, body)
   }
 
-  
-  getAllDelays() {
-    const action = 'get-delay'
+  addSearchTerm(client_name: string, new_search_term: string) {
+    const action = 'add-search-term'
     const url = this.apiUrl + this.apiPath + action
     const body = {
-      "websites": Constants.WEBSITES
+      "client_name": client_name,
+      "search_term": new_search_term
     }
-    return this.httpClient.post(url, body)
-  }
-  
-  getAllScrapingStarts() {
-    const action = 'get-scraping-start'
-    const url = this.apiUrl + this.apiPath + action
-    const body = {
-      "websites": Constants.WEBSITES
-    }
-    return this.httpClient.post(url, body)
-  }
-  
-  getWebsites() {
-    const action = 'get-websites'
-    const url = this.apiUrl + this.apiPath + action
-    return this.httpClient.get(url) 
-  }
 
-  setDelay() {
-    const action = 'set-delay'
-    const url = this.apiUrl + this.apiPath + action
-  }
-
-  setScrapingStart() {
-    const action = 'set-scraping-start'
-    const url = this.apiUrl + this.apiPath + action
+    return this.httpClient.post(url, body)
   }
 }

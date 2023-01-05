@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Constants } from 'src/app/core/model/constants';
-import { CommandService } from 'src/app/core/services/command-service/command.service';
+import { ScraperService } from 'src/app/core/services/scraper-service/scraper.service';
 
 @Component({
   selector: 'app-test',
@@ -8,7 +8,7 @@ import { CommandService } from 'src/app/core/services/command-service/command.se
   styleUrls: ['./test.component.css']
 })
 export class TestComponent implements OnInit {
-  constructor(private commandService: CommandService) { }
+  constructor(private scraperService: ScraperService) { }
 
   delays = {}
   websites = {}
@@ -27,7 +27,7 @@ export class TestComponent implements OnInit {
   crawl(website: string) {
     console.log("crawl")
 
-    this.commandService.crawl(website).subscribe({
+    this.scraperService.crawl(website).subscribe({
       next: x => {
         console.log('Observer got a next value: ')
         console.log(x)
@@ -38,7 +38,7 @@ export class TestComponent implements OnInit {
   }
 
   getAllDelays() {
-    this.commandService.getAllDelays().subscribe({
+    this.scraperService.getAllDelays().subscribe({
       next: x => {
         console.log('Observer got a next value: ')
         console.log(x)
@@ -50,7 +50,7 @@ export class TestComponent implements OnInit {
   }
 
   getLastScrapedDates() {
-    this.commandService.getAllScrapingStarts().subscribe({
+    this.scraperService.getAllScrapingStarts().subscribe({
       next: x => {
         console.log('Observer got a next value: ')
         console.log(x)
@@ -62,7 +62,7 @@ export class TestComponent implements OnInit {
   }
 
   getAllWebsites() {
-    this.commandService.getWebsites().subscribe({
+    this.scraperService.getWebsites().subscribe({
       next: x => {
         console.log('Observer got a next value: ')
         console.log(x)
