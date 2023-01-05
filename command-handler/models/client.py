@@ -9,11 +9,9 @@ class Client:
 
     def __init__(self,
                  id: int,
-                 name: str = '',
-                 search_terms: List[SearchTerm] = []):
+                 name: str = ''):
         self.id = id
         self.name = name
-        self.search_terms = search_terms
 
     def to_dict(self):
         return {

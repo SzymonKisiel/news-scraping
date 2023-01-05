@@ -65,8 +65,8 @@ class SentimentRepository:
         self.logger.debug(f"get_all_by_client_id: {client_id}")
         query = """
             SELECT s.id, s.article_id, s.search_term_id, s.sentence, s.positive_score, s.neutral_score, s.negative_score, s.overall_sentiment,
-                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`,
-                st.term
+                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`, a.created_at,
+                st.term, st.updated_sentiments_at
             FROM news_scraping_db.sentiment s
             JOIN news_scraping_db.sentiment_label sl ON s.overall_sentiment = sl.id
             JOIN news_scraping_db.article a ON s.article_id = a.id
@@ -84,8 +84,8 @@ class SentimentRepository:
         self.logger.debug(f"get_all_by_client_name: {client_name}")
         query = """
             SELECT s.id, s.article_id, s.search_term_id, s.sentence, s.positive_score, s.neutral_score, s.negative_score, s.overall_sentiment,
-                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`,
-                st.term
+                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`, a.created_at,
+                st.term, st.updated_sentiments_at
             FROM news_scraping_db.sentiment s
             JOIN news_scraping_db.sentiment_label sl ON s.overall_sentiment = sl.id
             JOIN news_scraping_db.article a ON s.article_id = a.id
@@ -103,8 +103,8 @@ class SentimentRepository:
         self.logger.debug(f"get_all_by_search_term_id: {search_term_id}")
         query = """
             SELECT s.id, s.article_id, s.search_term_id, s.sentence, s.positive_score, s.neutral_score, s.negative_score, s.overall_sentiment,
-                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`,
-                st.term 
+                a.url, a.website, a.published_at, a.title, a.author, a.subtitle, a.`text`, a.created_at,
+                st.term, st.updated_sentiments_at
             FROM news_scraping_db.sentiment s
             JOIN news_scraping_db.sentiment_label sl ON s.overall_sentiment = sl.id
             JOIN news_scraping_db.article a ON s.article_id = a.id

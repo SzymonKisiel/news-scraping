@@ -12,3 +12,6 @@ class SearchTermService:
 
     def get_all_by_client_name(self, client_name: str):
         return self.search_term_repository.get_all_by_client_name(client_name)
+
+    def get_all_by_client_id(self, client_id: int):
+        return self.search_term_repository.get_all_by_client_id(client_id)

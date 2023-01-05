@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from database.repositories.client_repository import ClientRepository
 from database.repositories.search_term_repository import SearchTermRepository
 from database.repositories.sentiment_repository import SentimentRepository
+from models.search_term import SearchTerm
 from models.sentiment import Sentiment
 from services.client_service import ClientService
 from services.search_service import SearchService
@@ -283,16 +284,21 @@ def add_search_term():
 @bp.route('get-all-sentiments', methods=['GET'])
 def get_all_sentiments():
     search_term = request.args.get('term')
-    if search_term is None:
+    search_term_id = request.args.get('term_id', type=int)
+    if search_term is None and search_term_id is None:
         response = {
             'code': 400,
             'message': 'Invalid parameters',
-            'detail': '"term" parameter is required'
+            'detail': '"term" or "term_id" parameter is required'
         }
         app.logger.debug(response)
         return make_response(jsonify(response), 400)
 
-    sentiments = sentiment_service.get_all_by_search_term(search_term)
+    sentiments: List[Sentiment] = []
+    if search_term is not None:
+        sentiments = sentiment_service.get_all_by_search_term(search_term)
+    elif search_term_id is not None:
+        sentiments = sentiment_service.get_all_by_search_term_id(search_term_id)
     sentiments_result = []
     for sentiment in sentiments:
         sentiments_result.append(sentiment.to_dict())
@@ -306,20 +312,25 @@ def get_all_sentiments():
 @bp.route('get-all-search-terms', methods=['GET'])
 def get_all_search_terms():
     client_name = request.args.get('client_name')
-    if client_name is None:
+    client_id = request.args.get('client_id', type=int)
+    if client_name is None and client_id is None:
         response = {
             'code': 400,
             'message': 'Invalid parameters',
-            'detail': '"client_name" parameter is required'
+            'detail': '"client_name" or "client_id" parameter is required'
         }
         app.logger.debug(response)
         return make_response(jsonify(response), 400)
 
-    search_terms = search_term_service.get_all_by_client_name(client_name)
-    search_term_names = [term.search_term for term in search_terms]
+    search_terms: List[SearchTerm] = []
+    if client_name is not None:
+        search_terms = search_term_service.get_all_by_client_name(client_name)
+    elif client_id is not None:
+        search_terms = search_term_service.get_all_by_client_id(client_id)
+    search_terms_json = [term.to_dict() for term in search_terms]
 
     response = {
-        "search_terms": search_term_names
+        "search_terms": search_terms_json
     }
     return make_response(jsonify(response), 200)
 

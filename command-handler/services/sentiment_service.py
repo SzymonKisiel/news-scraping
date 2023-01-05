@@ -55,6 +55,9 @@ class SentimentService:
     def get_all_by_search_term(self, search_term: str):
         return self.sentiment_repository.get_all_by_search_term_name(search_term)
 
+    def get_all_by_search_term_id(self, search_term_id: int):
+        return self.sentiment_repository.get_all_by_search_term_id(search_term_id)
+
     def __update_sentiments_for_term(self, term: SearchTerm):
         # Init connection
         cnx = get_mysql_db_connection()
