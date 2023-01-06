@@ -1,0 +1,11 @@
+<p>test works!</p>
+Websites:
+<pre>{{ websites | json }}</pre>
+Delays:
+<pre>{{ delays | json }}</pre>
+Last scraped article date:
+<pre>{{ last_dates | json }}</pre>
+
+<div *ngFor="let website of websites_const">
+    <button (click)="crawl(website)">Crawl {{website}}</button>
+</div>
