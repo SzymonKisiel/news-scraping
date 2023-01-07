@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SearchTerm } from 'src/app/core/model/search_term';
 import { CommandService } from 'src/app/core/services/command-service/command.service';
 import { SentimentService } from 'src/app/core/services/sentiment-service/sentiment.service';
@@ -10,18 +11,27 @@ import { SentimentService } from 'src/app/core/services/sentiment-service/sentim
 })
 export class SearchTermsComponent {
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
     private commandService: CommandService,
     private sentimentService: SentimentService) { }
   
   searchTerms: SearchTerm[] = [];
-  clientName: string = 'Szymon';
+  // clientName: string = 'Szymon';
+  clientId: number = 0;
 
   ngOnInit() {
-    this.getAllSearchTerms();
+    this.route.params.subscribe(params => {
+      this.clientId = params['client-id'];
+      console.log(this.clientId)
+      this.getAllSearchTerms();
+    });
+
+    // this.getAllSearchTerms();
   }
 
   getAllSearchTerms() {
-    this.commandService.getAllSearchTerms(this.clientName).subscribe({
+    this.commandService.getAllSearchTermsByClientId(this.clientId).subscribe({
       next: x => {
         console.log('Observer got a next value: ');
         // console.log(clients);
@@ -41,5 +51,9 @@ export class SearchTermsComponent {
       error: err => console.error('Observer got an error: ' + err),
       complete: () => console.log('Observer got a complete notification')
     });
+  }
+
+  navigateToSentiments(selectedSearchTerm: SearchTerm) {
+    this.router.navigate(['/sentiments', selectedSearchTerm.id]);
   }
 }

@@ -38,7 +38,7 @@ export class SentimentService {
   }
   
   updateSentiments(search_term: string) {
-    const action = 'update-sentiments'
+    const action = 'update-sentiment'
     const url = this.apiUrl + this.apiPath + action
     const body = {
       "search_term": search_term

@@ -1,3 +1,20 @@
-<p>clients works!</p>
 <h1>Klienci</h1>
-<pre>{{ clients | json }}</pre>
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nazwa klienta</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let client of clients">
+      <tr>
+        <th scope="row">{{client.id}}</th>
+        <td>{{client.name}}</td>
+        <td><button (click)="navigateToSearchTerms(client)">Przejdź do wyszukiwanych słów</button></td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+<!-- <pre>{{ clients | json }}</pre> -->

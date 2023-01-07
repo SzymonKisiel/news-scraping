@@ -1,3 +1,23 @@
-<p>search-terms works!</p>
 <h1>Klienci</h1>
-<pre>{{ searchTerms | json }}</pre>
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Wyszukiwana fraza</th>
+      <th scope="col">Data ostatnio znalezionego artykułu</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let searchTerm of searchTerms">
+      <tr>
+        <th scope="row">{{searchTerm.id}}</th>
+        <td>{{searchTerm.search_term}}</td>
+        <td>{{searchTerm.updated_sentiments_at}}</td>
+        <td><button (click)="navigateToSentiments(searchTerm)">Pokaż znalezione frazy</button></td>
+        <td><button (click)="updateSentiments(searchTerm.search_term)">Wyszukaj nowe frazy</button></td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+<!-- <pre>{{ searchTerms | json }}</pre> -->

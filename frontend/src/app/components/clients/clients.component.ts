@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Client } from 'src/app/core/model/client';
 import { CommandService } from 'src/app/core/services/command-service/command.service';
 
@@ -8,7 +9,9 @@ import { CommandService } from 'src/app/core/services/command-service/command.se
   styleUrls: ['./clients.component.css']
 })
 export class ClientsComponent implements OnInit {
-  constructor(private commandService: CommandService) { }
+  constructor(
+    private router: Router,
+    private commandService: CommandService) { }
 
   clients: Client[] = [];
 
@@ -26,6 +29,10 @@ export class ClientsComponent implements OnInit {
       error: err => console.error('Observer got an error: ' + err),
       complete: () => console.log('Observer got a complete notification')
     });
+  }
+
+  navigateToSearchTerms(selectedClient: Client) {
+    this.router.navigate(['/search-terms', selectedClient.id]);
   }
   
 }
