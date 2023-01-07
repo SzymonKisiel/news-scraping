@@ -23,7 +23,7 @@ const routes: Routes = [
   {
     path: 'scraper',
     component: ScraperComponent
-  }
+  },
   {
     path: 'clients',
     component: ClientsComponent
