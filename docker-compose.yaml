@@ -27,6 +27,22 @@ services:
       - "5003:5003"
     networks:
       - test-network
+  sentiment-analyser-worker:
+    build: ./sentiment-analyser
+    entrypoint: celery
+    command: -A celery_app worker --loglevel=info --pool=solo
+    networks:
+      - test-network
+  redis:
+    image: redis:7.0.7
+    hostname: redis
+    networks:
+      - test-network
+  rabbitmq:
+    image: rabbitmq:3.11.6
+    hostname: rabbitmq
+    networks:
+      - test-network
   scraper_db:
     image: mysql:8.0.31-debian
     restart: always

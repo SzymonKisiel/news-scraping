@@ -15,8 +15,7 @@ class SentimentAnalyseService:
         self.tokenizer = AutoTokenizer.from_pretrained("Voicelab/herbert-base-cased-sentiment")
         self.model = AutoModelForSequenceClassification.from_pretrained("Voicelab/herbert-base-cased-sentiment")
 
-    def analyse(self, analyse_request: AnalyseRequest) -> SentimentScore:
-        text_input = analyse_request.text
+    def analyse(self, text_input: str) -> SentimentScore:
         encoding = self.tokenizer(
             text_input,
             add_special_tokens=True,
