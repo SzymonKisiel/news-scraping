@@ -111,6 +111,21 @@ class SearchTermRepository:
         cursor.close()
         cnx.close()
 
+    def add_search_term_to_client_by_id(self, client_id, search_term):
+        self.logger.debug('add_search_term_to_client')
+
+        # Init connection
+        cnx = get_mysql_db_connection()
+        cursor = cnx.cursor()
+
+        # Execute procedure - can throw DatabaseError
+        cursor.callproc('AddSearchTermById', args=(client_id, search_term))
+
+        # Close the connection
+        cnx.commit()
+        cursor.close()
+        cnx.close()
+
     def get_all_search_terms(self):
         self.logger.debug('get_all_search_terms')
         query = """

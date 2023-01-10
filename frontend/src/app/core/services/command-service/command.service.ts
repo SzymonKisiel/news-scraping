@@ -65,4 +65,15 @@ export class CommandService {
 
     return this.httpClient.post(url, body)
   }
+
+  addSearchTermByClientId(client_id: number, new_search_term: string) {
+    const action = 'add-search-term-by-client-id'
+    const url = this.apiUrl + this.apiPath + action
+    const body = {
+      "client_id": client_id,
+      "search_term": new_search_term
+    }
+
+    return this.httpClient.post(url, body)
+  }
 }

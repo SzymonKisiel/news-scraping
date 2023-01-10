@@ -330,6 +330,29 @@ def add_search_term():
     return make_response(jsonify(response), 200)
 
 
+@bp.route('add-search-term-by-client-id', methods=['POST'])
+def add_search_term_by_client_id():
+    try:
+        req = AddSearchTermByIdRequest(**request.get_json())
+    except ValidationError as e:
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
+
+    try:
+        client_service.add_search_term_by_id(req)
+    except DatabaseError as e:
+        print("Error: {}".format(e))
+        return {"message": e.msg}
+
+    response = {'message': 'Done', 'code': 200}
+    return make_response(jsonify(response), 200)
+
+
 @bp.route('get-all-sentiments', methods=['GET'])
 def get_all_sentiments():
     search_term = request.args.get('term')

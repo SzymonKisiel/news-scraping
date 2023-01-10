@@ -15,9 +15,30 @@
         <td>{{searchTerm.search_term}}</td>
         <td>{{searchTerm.updated_sentiments_at}}</td>
         <td><button (click)="navigateToSentiments(searchTerm)">Pokaż znalezione frazy</button></td>
-        <td><button (click)="updateSentiments(searchTerm.search_term)">Wyszukaj nowe frazy</button></td>
+        <td>
+          <button (click)="updateSentiments(searchTerm.search_term)">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Wyszukaj nowe frazy
+          </button>
+        </td>
       </tr>
     </ng-container>
   </tbody>
 </table>
+
+<h1>Dodanie nowej frazy</h1>
+<form (ngSubmit)="onSubmit()" #searchTermForm="ngForm">
+  <div class="form-group">
+    <label for="name">Nazwa klienta</label>
+    <input type="text" class="form-control" id="name"
+           required
+           [(ngModel)]="newSearchTerm" name="name"
+           #name="ngModel">
+    <div [hidden]="name.valid || name.pristine"
+         class="alert alert-danger">
+      Nazwa klienta jest wymagana
+    </div>
+  </div>
+  <button type="submit" class="btn btn-success" [disabled]="!searchTermForm.form.valid">Submit</button>
+</form>
 <!-- <pre>{{ searchTerms | json }}</pre> -->

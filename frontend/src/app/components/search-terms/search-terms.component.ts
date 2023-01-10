@@ -19,6 +19,7 @@ export class SearchTermsComponent {
   searchTerms: SearchTerm[] = [];
   // clientName: string = 'Szymon';
   clientId: number = 0;
+  newSearchTerm: string = '';
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -55,5 +56,24 @@ export class SearchTermsComponent {
 
   navigateToSentiments(selectedSearchTerm: SearchTerm) {
     this.router.navigate(['/sentiments', selectedSearchTerm.id]);
+  }
+
+  onSubmit() {
+    console.log(this.newSearchTerm)
+    if (this.newSearchTerm == '') {
+      return;
+    }
+    this.commandService.addSearchTermByClientId(this.clientId, this.newSearchTerm).subscribe({
+      next: _ => {
+      },
+      error: err => {
+        console.error('Observer got an error: ' + err);
+        alert('Nieznany błąd serwera - nie udało się dodać nowej frazy.')
+      },
+      complete: () => {
+        this.getAllSearchTerms();
+        alert('Dodano nową frazę.')
+      }
+    });
   }
 }
