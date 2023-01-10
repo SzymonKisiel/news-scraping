@@ -17,4 +17,21 @@
     </ng-container>
   </tbody>
 </table>
+
+<h1>Dodanie klienta</h1>
+<form (ngSubmit)="onSubmit()" #clientForm="ngForm">
+  <div class="form-group">
+    <label for="name">Nazwa klienta</label>
+    <input type="text" class="form-control" id="name"
+           required
+           [(ngModel)]="newClientName" name="name"
+           #name="ngModel">
+    <div [hidden]="name.valid || name.pristine"
+         class="alert alert-danger">
+      Nazwa klienta jest wymagana
+    </div>
+  </div>
+  <button type="submit" class="btn btn-success" [disabled]="!clientForm.form.valid">Submit</button>
+</form>
+
 <!-- <pre>{{ clients | json }}</pre> -->

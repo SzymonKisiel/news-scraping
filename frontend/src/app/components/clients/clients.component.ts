@@ -14,6 +14,7 @@ export class ClientsComponent implements OnInit {
     private commandService: CommandService) { }
 
   clients: Client[] = [];
+  newClientName: string = '';
 
   ngOnInit() {
     this.getAllClients();
@@ -33,6 +34,25 @@ export class ClientsComponent implements OnInit {
 
   navigateToSearchTerms(selectedClient: Client) {
     this.router.navigate(['/search-terms', selectedClient.id]);
+  }
+
+  onSubmit() {
+    console.log(this.newClientName)
+    if (this.newClientName == '') {
+      return;
+    }
+    this.commandService.addClient(this.newClientName).subscribe({
+      next: _ => {
+      },
+      error: err => {
+        console.error('Observer got an error: ' + err);
+        alert('Unexpected server error - failed to add new client.')
+      },
+      complete: () => {
+        this.getAllClients();
+        alert('Successfully added a new client.')
+      }
+    });
   }
   
 }
