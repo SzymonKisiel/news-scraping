@@ -28,3 +28,14 @@ docker start new-container
 
 # Now attach bash session.
 docker exec -it new-container bash
+
+
+
+# build & push
+docker build -t skisiel/news-scraping_scraper:0.1 ./scraper
+docker build -t skisiel/news-scraping_command-handler:0.1 ./command-handler
+docker build -t skisiel/news-scraping_sentiment-analyser:0.1 ./sentiment-analyser
+
+docker push skisiel/news-scraping_scraper:0.1
+docker push skisiel/news-scraping_command-handler:0.1
+docker push skisiel/news-scraping_sentiment-analyser:0.1
