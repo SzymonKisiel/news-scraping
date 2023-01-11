@@ -33,16 +33,16 @@
 <h1>Dodanie nowej frazy</h1>
 <form (ngSubmit)="onSubmit()" #searchTermForm="ngForm">
   <div class="form-group">
-    <label for="name">Nazwa klienta</label>
+    <label for="name">Fraza</label>
     <input type="text" class="form-control" id="name"
            required
            [(ngModel)]="newSearchTerm" name="name"
            #name="ngModel">
     <div [hidden]="name.valid || name.pristine"
          class="alert alert-danger">
-      Nazwa klienta jest wymagana
+      Fraza nie może być pusta.
     </div>
   </div>
-  <button type="submit" class="btn btn-success" [disabled]="!searchTermForm.form.valid">Submit</button>
+  <button type="submit" class="btn btn-success" [disabled]="!searchTermForm.form.valid">Prześlij</button>
 </form>
 <!-- <pre>{{ searchTerms | json }}</pre> -->

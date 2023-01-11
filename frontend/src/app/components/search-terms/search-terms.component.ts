@@ -132,7 +132,7 @@ export class SearchTermsComponent {
       },
       complete: () => {
         this.getAllSearchTerms();
-        alert('Dodano nową frazę.')
+        alert('Pomyślnie dodano nową frazę.')
       }
     });
   }

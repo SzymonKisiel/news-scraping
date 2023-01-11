@@ -46,11 +46,11 @@ export class ClientsComponent implements OnInit {
       },
       error: err => {
         console.error('Observer got an error: ' + err);
-        alert('Unexpected server error - failed to add new client.')
+        alert('Nieznany błąd serwera - nie udało się dodać nowego klienta.')
       },
       complete: () => {
         this.getAllClients();
-        alert('Successfully added a new client.')
+        alert('Pomyślnie dodano nowego klienta.')
       }
     });
   }
