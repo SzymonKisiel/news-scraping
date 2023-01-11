@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http'
 import { Constants } from '../../model/constants';
 import { API_URL } from '../../tokens';
 import { Sentiments } from '../../model/sentiment';
+import { UpdateSentimentsTasks } from '../../model/task_status';
 
 @Injectable({
   providedIn: 'root'
@@ -38,12 +39,26 @@ export class SentimentService {
   }
   
   updateSentiments(search_term: string) {
-    const action = 'update-sentiment'
-    const url = this.apiUrl + this.apiPath + action
+    const action = 'update-sentiments';
+    const url = this.apiUrl + this.apiPath + action;
     const body = {
       "search_term": search_term
     }
 
-    return this.httpClient.post(url, body)
+    return this.httpClient.post(url, body);
+  }
+
+  updateSentimentsStatus(search_term: string) {
+    const action = 'update-sentiments/status/';
+    const url = this.apiUrl + this.apiPath + action + search_term;
+
+    return this.httpClient.get(url);
+  }
+
+  getAllUpdateSentimentsTasks() {
+    const action = 'update-sentiments/get-all'
+    const url = this.apiUrl + this.apiPath + action;
+
+    return this.httpClient.get<UpdateSentimentsTasks>(url);
   }
 }
