@@ -10,16 +10,16 @@ import { TestComponent } from './components/test/test.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'test', pathMatch: 'full'
+    redirectTo: 'clients', pathMatch: 'full'
   },
-  {
-    path: 'test',
-    component: TestComponent
-  },
-  {
-    path: 'mat-test',
-    component: MaterialTestComponent
-  },
+  // {
+  //   path: 'test',
+  //   component: TestComponent
+  // },
+  // {
+  //   path: 'mat-test',
+  //   component: MaterialTestComponent
+  // },
   {
     path: 'scraper',
     component: ScraperComponent
