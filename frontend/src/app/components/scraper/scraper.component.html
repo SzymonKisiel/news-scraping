@@ -1,1 +1,146 @@
-<p>scraper works!</p>
+<h1>Ustawienia scraperów</h1>
+<form (ngSubmit)="onSubmit()" #settingsForm="ngForm">
+  <table class="table">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col"></th>
+        <ng-container *ngFor="let website of websites">
+          <th scope="col">{{website}}</th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Opóźnienie</th>
+        <ng-container *ngFor="let website of websites; let i = index">
+          <!-- <td>{{delays[website]}}</td> -->
+          <td>
+            <!-- {{website}} {{i}} -->
+            <!-- <input
+              class="form-control"
+              id="delay"
+              name="delay"
+              [(ngModel)]="delays[website]"
+              #delay="ngModel"
+              required
+            /> -->
+            <input
+              name=delay{{i}}
+              class="form-control"
+              [(ngModel)]="delays[website]"
+              type="number"
+              required
+            />
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <th scope="row">Data ostatniego artykułu</th>
+        <ng-container *ngFor="let website of websites; let i = index">
+          <td>
+            <input
+              name=lastDate{{i}}
+              class="form-control"
+              [(ngModel)]="last_dates[website]"
+              [ngStyle]="{'font-size': '12px'}"
+              
+              required
+            />
+            <!-- <input
+              class="form-control"
+              id="lastDates"
+              name="lastDates"
+              [(ngModel)]="last_dates[website]"
+              #lastDates="ngModel"
+              type="datetime"
+              [ngStyle]="{'font-size': '12px'}"
+              required
+            /> -->
+          </td>
+        </ng-container>
+      </tr>
+      <!-- <tr>
+        <th scope="row">Uruchom</th>
+        <ng-container *ngFor="let website of websites">
+          <td>
+            <button>Uruchom jednokrotnie</button>
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <th scope="row"></th>
+        <td colspan="5">
+          <button>Uruchom wszystkie jednorazowo</button>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row"></th>
+        <td colspan="5">
+          <button>Uruchom wszystkie wielokrotnie</button>
+        </td>
+      </tr> -->
+    </tbody>
+  </table>
+  <button type="submit" [disabled]="!settingsForm.form.valid || !hasSettingsChanged()">Zapisz zmiany</button>
+</form>
+<br><hr><br>
+<h1>Uruchomienie scraperów</h1>
+<h2>Pojedyńcze witryny</h2>
+
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col"></th>
+      <ng-container *ngFor="let website of websites">
+        <th scope="col">{{website}}</th>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <!-- <th scope="row">Uruchom</th> -->
+      <th scope="row"></th>
+      <ng-container *ngFor="let website of websites">
+        <td>
+          <button (click)="crawlOnce(website)">Uruchom raz</button>
+        </td>
+      </ng-container>
+    </tr>
+  </tbody>
+</table>
+<div class="mx-3">
+  <h2 class="">Wszystkie witryny</h2>
+</div>
+<div class="container mb-1">
+  <div class="row">
+    <div class="col">
+      <button class="button" type="button" id="button-addon1"
+        (click)="crawlAllMultipleTimes()">Uruchom podaną liczbę razy</button>
+    </div>
+    <div class="col">
+      <input #input1 type="number" class="form-control" placeholder="1" aria-label="Example text with button addon" aria-describedby="button-addon1">
+    </div>
+  </div>
+</div>
+<div class="container mb-1">
+  <div class="row">
+    <div class="col">
+      <button class="button" type="button" id="button-addon1"
+        (click)="crawlAllForGivenTime()">Uruchom na podaną liczbę sekund</button>
+    </div>
+    <div class="col">
+      <input #input2 type="number" class="form-control" placeholder="3600" aria-label="Example text with button addon" aria-describedby="button-addon1">
+    </div>
+  </div>
+</div>
+<div class="container mb-1">
+  <div class="row">
+    <div class="col">
+      <button class="button" type="button" id="button-addon1"
+        (click)="crawlAllToDueTime()">Uruchom do podanej daty zakończenia</button>
+    </div>
+    <div class="col">
+      <input #input3 type="datetime-local" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+    </div>
+  </div>
+</div>
