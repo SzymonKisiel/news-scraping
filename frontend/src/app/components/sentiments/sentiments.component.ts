@@ -40,16 +40,4 @@ export class SentimentsComponent {
       complete: () => console.log('Observer got a complete notification')
     })
   }
-  // getAllClients() {
-  //   this.commandService.getAllSearchTerms(this.clientName).subscribe({
-  //     next: x => {
-  //       console.log('Observer got a next value: ');
-  //       // console.log(clients);
-  //       this.searchTerms = x.search_terms;
-  //     },
-  //     error: err => console.error('Observer got an error: ' + err),
-  //     complete: () => console.log('Observer got a complete notification')
-  //   });
-  // }
-  
 }
