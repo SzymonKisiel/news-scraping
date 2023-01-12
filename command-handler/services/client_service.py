@@ -1,7 +1,7 @@
 import logging
 from database.repositories.client_repository import ClientRepository
 from database.repositories.search_term_repository import SearchTermRepository
-from services.models import AddClientRequest, AddSearchTermRequest
+from services.models import AddClientRequest, AddSearchTermRequest, AddSearchTermByIdRequest
 
 
 class ClientService:
@@ -22,3 +22,6 @@ class ClientService:
 
     def add_search_term(self, request: AddSearchTermRequest):
         self.search_term_repository.add_search_term_to_client(request.client_name, request.search_term)
+
+    def add_search_term_by_id(self, request: AddSearchTermByIdRequest):
+        self.search_term_repository.add_search_term_to_client_by_id(request.client_id, request.search_term)

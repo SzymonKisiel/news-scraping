@@ -11,34 +11,29 @@ RUN pip install --upgrade pip
 RUN apt-get -y update \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# Downlad model
-# RUN apk update
-# RUN apk add git
-# RUN git lfs install
-# RUN git clone https://huggingface.co/Voicelab/herbert-base-cased-sentiment /tmp/model
-# RUN rm -rf /tmp/model/.git
-# RUN mkdir ~/.cache/huggingface/transformers
-# COPY /tmp/model ~/.cache/huggingface/transformers
-# RUN python3 -c "
-#     from sentence_transformers import SentenceTransformer
-#     model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
-#     model.save('models')
-# "
-
 # Add sources
 ADD requirements.txt /application/
 ADD app.py /application/
+ADD celery_app.py /application/
 ADD main.py /application/
+ADD database /application/database
 ADD models /application/models
 ADD services /application/services
+ADD utils /application/utils
 
-RUN pip install --no-cache-dir -r /application/requirements.txt
-RUN pip install --no-cache-dir gunicorn
+RUN pip install -r /application/requirements.txt
+RUN pip install gunicorn
 
 # Download sentiment models
 RUN python -c "from transformers import AutoTokenizer, AutoModelForSequenceClassification; AutoTokenizer.from_pretrained('Voicelab/herbert-base-cased-sentiment'); AutoModelForSequenceClassification.from_pretrained('Voicelab/herbert-base-cased-sentiment')"
 
+# Download sentencizer model
+RUN pip install -U pip setuptools wheel
+RUN python -m spacy download pl_core_news_md
+
 EXPOSE 5003
+# Setup IS_DOCKER environment variable
+ENV IS_DOCKER Yes
 
 #ENTRYPOINT  [ "python", "main.py" ]
 ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:5003", "--log-level", "debug", "main:app" ]

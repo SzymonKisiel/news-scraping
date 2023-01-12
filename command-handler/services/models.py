@@ -42,3 +42,8 @@ class AddClientRequest(BaseModel):
 class AddSearchTermRequest(BaseModel):
     client_name: str
     search_term: str
+
+
+class AddSearchTermByIdRequest(BaseModel):
+    client_id: str
+    search_term: str

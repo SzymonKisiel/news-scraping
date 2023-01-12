@@ -29,6 +29,7 @@ from services.models import *
 #
 #     app.logger.addHandler(consoleHandler)
 from services.search_term_service import SearchTermService
+from services.sentiment_analyse_service import SentimentAnalyseService
 from services.sentiment_service import SentimentService
 
 bp = Blueprint('route_prefix', __name__, template_folder='templates', url_prefix='/api/command-handler')
@@ -50,6 +51,7 @@ scraper_service = ScraperService(app.logger)
 search_service = SearchService(app.logger)
 client_service = ClientService(app.logger)
 sentiment_service = SentimentService(app.logger)
+sentiment_analyse_service = SentimentAnalyseService(app.logger)
 search_term_service = SearchTermService(app.logger)
 
 
@@ -216,8 +218,25 @@ def test():
     return 'good'
 
 
-@bp.route('update-sentiment', methods=['POST'])
-def update_sentiment():
+# @bp.route('update-sentiment', methods=['POST'])
+# def update_sentiment():
+#     try:
+#         req = UpdateSentimentRequest(**request.get_json())
+#     except ValidationError as e:
+#         response = {
+#             'code': 400,
+#             'message': 'Validation error',
+#             'detail': e.errors()
+#         }
+#         app.logger.debug(response)
+#         return make_response(jsonify(response), 400)
+#
+#     sentiment_service.update(req)
+#
+#     response = {'message': 'Done', 'code': 200}
+#     return make_response(jsonify(response), 200)
+@bp.route('update-sentiments', methods=['POST'])
+def update_sentiments():
     try:
         req = UpdateSentimentRequest(**request.get_json())
     except ValidationError as e:
@@ -229,10 +248,40 @@ def update_sentiment():
         app.logger.debug(response)
         return make_response(jsonify(response), 400)
 
-    sentiment_service.update(req)
+    response = sentiment_analyse_service.update_sentiments(req)
+    response_code = response.get('code')
+    if response_code is None:
+        response_code = 200
+    return response, response_code
 
-    response = {'message': 'Done', 'code': 200}
-    return make_response(jsonify(response), 200)
+
+@bp.route('/update-sentiments/status/<search_term>')
+def update_sentiments_status(search_term: str):
+    try:
+        req = UpdateSentimentRequest(**request.get_json())
+    except ValidationError as e:
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
+
+    response = sentiment_analyse_service.update_sentiments_status(search_term)
+    response_code = response.get('code')
+    if response_code is None:
+        response_code = 200
+    return response, response_code
+
+
+@bp.route('/update-sentiments/get-all')
+def update_sentiments_get_all():
+    response = sentiment_analyse_service.update_sentiments_get_all()
+    response_code = response.get('code')
+    if response_code is None:
+        response_code = 200
+    return response, response_code
 
 
 @bp.route('add-client', methods=['POST'])
@@ -273,6 +322,29 @@ def add_search_term():
 
     try:
         client_service.add_search_term(req)
+    except DatabaseError as e:
+        print("Error: {}".format(e))
+        return {"message": e.msg}
+
+    response = {'message': 'Done', 'code': 200}
+    return make_response(jsonify(response), 200)
+
+
+@bp.route('add-search-term-by-client-id', methods=['POST'])
+def add_search_term_by_client_id():
+    try:
+        req = AddSearchTermByIdRequest(**request.get_json())
+    except ValidationError as e:
+        response = {
+            'code': 400,
+            'message': 'Validation error',
+            'detail': e.errors()
+        }
+        app.logger.debug(response)
+        return make_response(jsonify(response), 400)
+
+    try:
+        client_service.add_search_term_by_id(req)
     except DatabaseError as e:
         print("Error: {}".format(e))
         return {"message": e.msg}

@@ -14,6 +14,7 @@ import { SearchTermsComponent } from './components/search-terms/search-terms.com
 import { SentimentsComponent } from './components/sentiments/sentiments.component';
 import { ScraperComponent } from './components/scraper/scraper.component';
 import { ArticlesComponent } from './components/articles/articles.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ArticlesComponent } from './components/articles/articles.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

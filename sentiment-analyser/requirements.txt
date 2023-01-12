@@ -5,4 +5,7 @@ flask==2.2.2
 spacy~=3.4.4
 torch~=1.13.1
 transformers~=4.25.1
-scipy~=1.9.3
+scipy==1.10.0
+celery~=5.2.7
+redis~=4.4.1
+mysql-connector-python~=8.0.31
