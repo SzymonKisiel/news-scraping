@@ -1,37 +1,43 @@
-<h1>Klienci</h1>
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Nazwa klienta</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let client of clients">
+<div class="mx-3 my-2">
+  <h1>Klienci</h1>
+  <table class="table">
+    <thead class="thead-light">
       <tr>
-        <th scope="row">{{client.id}}</th>
-        <td>{{client.name}}</td>
-        <td><button (click)="navigateToSearchTerms(client)">Przejdź do wyszukiwanych słów</button></td>
+        <th scope="col">ID</th>
+        <th scope="col">Nazwa klienta</th>
+        <th scope="col"></th>
       </tr>
-    </ng-container>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let client of clients">
+        <tr>
+          <th scope="row">{{client.id}}</th>
+          <td>{{client.name}}</td>
+          <td><button (click)="navigateToSearchTerms(client)">Przejdź do wyszukiwanych fraz</button></td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
 
-<h1>Dodanie klienta</h1>
-<form (ngSubmit)="onSubmit()" #clientForm="ngForm">
-  <div class="form-group">
-    <label for="name">Nazwa klienta</label>
-    <input type="text" class="form-control" id="name"
-           required
-           [(ngModel)]="newClientName" name="name"
-           #name="ngModel">
-    <div [hidden]="name.valid || name.pristine"
-         class="alert alert-danger">
-      Nazwa klienta jest wymagana
+<br><hr>
+
+<div class="mx-3 my-2">
+  <h1>Dodanie klienta</h1>
+  <form (ngSubmit)="onSubmit()" #clientForm="ngForm">
+    <div class="form-group">
+      <label for="name">Nazwa klienta</label>
+      <input type="text" class="form-control" id="name"
+             required
+             [(ngModel)]="newClientName" name="name"
+             #name="ngModel">
+      <div [hidden]="name.valid || name.pristine"
+           class="alert alert-danger">
+        Nazwa klienta jest wymagana
+      </div>
     </div>
-  </div>
-  <button type="submit" [disabled]="!clientForm.form.valid">Prześlij</button>
-</form>
+    <button type="submit" [disabled]="!clientForm.form.valid">Prześlij</button>
+  </form>
+</div>
 
 <!-- <pre>{{ clients | json }}</pre> -->

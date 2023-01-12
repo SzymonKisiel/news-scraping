@@ -1,28 +1,31 @@
-<h1>Odnalezione frazy</h1>
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Znaleziona fraza</th>
-      <th scope="col">Ocena pozytywna</th>
-      <th scope="col">Ocena neutralna</th>
-      <th scope="col">Ocena negatywna</th>
-      <th scope="col">Ocena sumaryczna</th>
-      <th scope="col">Link artytułu</th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let sentiment of sentiments">
+<div class="mx-3 my-2">
+  <h1>Odnalezione frazy</h1>
+  <table class="table">
+    <thead class="thead-light">
       <tr>
-        <th scope="row">{{sentiment.id}}</th>
-        <td>{{sentiment.sentence}}</td>
-        <td>{{sentiment.positive_score}}</td>
-        <td>{{sentiment.neutral_score}}</td>
-        <td>{{sentiment.negative_score}}</td>
-        <td>{{id2label[sentiment.overall_sentiment]}}</td>
-        <td><a [href]="sentiment.article.url">{{sentiment.article.url}}</a></td>
+        <th scope="col">ID</th>
+        <th scope="col">Znaleziona fraza</th>
+        <th scope="col">Ocena pozytywna</th>
+        <th scope="col">Ocena neutralna</th>
+        <th scope="col">Ocena negatywna</th>
+        <th scope="col">Ocena sumaryczna</th>
+        <th scope="col">Link artytułu</th>
       </tr>
-    </ng-container>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let sentiment of sentiments">
+        <tr>
+          <th scope="row">{{sentiment.id}}</th>
+          <td>{{sentiment.sentence}}</td>
+          <td>{{sentiment.positive_score}}</td>
+          <td>{{sentiment.neutral_score}}</td>
+          <td>{{sentiment.negative_score}}</td>
+          <td>{{id2label[sentiment.overall_sentiment]}}</td>
+          <td><a [href]="sentiment.article.url">{{sentiment.article.url}}</a></td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+
 <!-- <pre>{{ sentiments | json }}</pre> -->
