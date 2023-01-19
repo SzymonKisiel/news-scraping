@@ -1,54 +1,69 @@
-<div class="mx-3 my-2">
-  <h1>Wyszukiwane frazy</h1>
-  <table class="table">
-    <thead class="thead-light">
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Wyszukiwana fraza</th>
-        <th scope="col">Data ostatnio znalezionego artykułu</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <ng-container *ngFor="let searchTerm of searchTerms">
-        <tr>
-          <th scope="row">{{searchTerm.id}}</th>
-          <td>{{searchTerm.search_term}}</td>
-          <td>{{searchTerm.updated_sentiments_at}}</td>
-          <td><button (click)="navigateToSentiments(searchTerm)">Pokaż znalezione frazy</button></td>
-          <td>
-            <button (click)="updateSentiments(searchTerm)" [ngStyle]="{'width': '150px'}">
-              <div *ngIf="searchTermsSpinners[searchTerm.search_term]">
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              </div>
-              <div *ngIf="!searchTermsSpinners[searchTerm.search_term]">
-                Wyszukaj nowe frazy
-              </div>
-            </button>
-          </td>
-        </tr>
-      </ng-container>
-    </tbody>
-  </table>
-</div>
+<!-- <div class="mx-3 my-2"> -->
+<div>
+  <!-- TITLE -->
+  <div class="m-2 p-1">
+    <h1>Wyszukiwane frazy</h1>
+  </div>
 
-<br><hr>
-
-<div class="mx-3 my-2">
-  <h1>Dodanie nowej frazy</h1>
-  <form (ngSubmit)="onSubmit()" #searchTermForm="ngForm">
-    <div class="form-group">
-      <label for="name">Fraza</label>
-      <input type="text" class="form-control" id="name"
-             required
-             [(ngModel)]="newSearchTerm" name="name"
-             #name="ngModel">
-      <div [hidden]="name.valid || name.pristine"
-           class="alert alert-danger">
-        Fraza nie może być pusta.
+  <!-- FORM -->
+  <div class="m-2 p-1">
+    <form class="row g-3" (ngSubmit)="onSubmit()" #searchTermForm="ngForm">
+      <div class="col-auto">
+        <label for="name" class="form-control-plaintext">Dodaj nową frazę:</label>
       </div>
-    </div>
-    <button type="submit" [disabled]="!searchTermForm.form.valid">Prześlij</button>
-  </form>
+      <div class="col-auto">
+        <input type="text"
+          class="form-control"
+          id="name"
+          required
+          [(ngModel)]="newSearchTerm"
+          name="name"
+          #name="ngModel">
+        <div [hidden]="name.valid || name.pristine"
+              class="alert alert-danger">
+          Fraza nie może być pusta.
+        </div>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn btn-light border-dark mb-3" [disabled]="!searchTermForm.form.valid">Prześlij</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- TABLE -->
+  <div class="m-0 p-0">
+    <table class="table table-striped align-middle">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Wyszukiwana fraza</th>
+          <th scope="col">Data ostatnio znalezionego artykułu</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let searchTerm of searchTerms">
+          <tr>
+            <th scope="row">{{searchTerm.id}}</th>
+            <td class="justify-content-center">{{searchTerm.search_term}}</td>
+            <td>{{searchTerm.updated_sentiments_at}}</td>
+            <td>
+              <button (click)="updateSentiments(searchTerm)" class="btn btn-light btn-sm border-dark" [ngStyle]="{'width': '88px'}">
+                <div *ngIf="searchTermsSpinners[searchTerm.search_term]">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </div>
+                <div *ngIf="!searchTermsSpinners[searchTerm.search_term]">
+                  Zaktualizuj
+                </div>
+              </button>
+            </td>
+            <td>
+              <button (click)="navigateToSentiments(searchTerm)" class="btn btn-light btn-sm border-dark">Znalezione frazy</button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
 </div>
-<!-- <pre>{{ searchTerms | json }}</pre> -->
