@@ -15,6 +15,9 @@ html body { background-color: lightgray !important; }
 
 .app-title-section {
     @extend .app-section;
+    @extend .pt-3;
+    @extend .ps-2;
+    @extend .pb-0;
 }
 
 .app-table-section {

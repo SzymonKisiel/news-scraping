@@ -7,7 +7,7 @@ import { ScraperService } from 'src/app/core/services/scraper-service/scraper.se
 @Component({
   selector: 'app-scraper',
   templateUrl: './scraper.component.html',
-  styleUrls: ['./scraper.component.css']
+  styleUrls: ['./scraper.component.scss']
 })
 export class ScraperComponent implements OnInit {
   constructor(private scraperService: ScraperService) { }
