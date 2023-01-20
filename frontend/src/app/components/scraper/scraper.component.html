@@ -1,71 +1,3 @@
-<!-- <div class="mx-3 mb-3">
-  <h1>Uruchomienie scraperów</h1>
-  <div class="mx-2">
-    <h2>Pojedyńcze witryny</h2>
-  </div>
-  
-  <table class="table">
-    <thead class="thead-light">
-      <tr>
-        <th scope="col"></th>
-        <ng-container *ngFor="let website of websites">
-          <th scope="col">{{website}}</th>
-        </ng-container>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row"></th>
-        <ng-container *ngFor="let website of websites">
-          <td>
-            <button class="btn btn-light border-dark" (click)="crawlOnce(website)">Uruchom raz</button>
-          </td>
-        </ng-container>
-      </tr>
-    </tbody>
-  </table>
-  
-  <div class="mx-2">
-    <h2>Wszystkie witryny</h2>
-  </div>
-
-
-  
-  <div class="container mb-1">
-    <div class="row">
-      <div class="col">
-        <button class="button btn btn-light border-dark" type="button" id="button-addon1"
-          (click)="crawlAllMultipleTimes()">Uruchom podaną liczbę razy</button>
-      </div>
-      <div class="col">
-        <input #input1 type="number" class="form-control" placeholder="1" aria-label="Example text with button addon" aria-describedby="button-addon1">
-      </div>
-    </div>
-  </div>
-  <div class="container mb-1">
-    <div class="row">
-      <div class="col">
-        <button class="button btn btn-light border-dark" type="button" id="button-addon1"
-          (click)="crawlAllForGivenTime()">Uruchom na podaną liczbę sekund</button>
-      </div>
-      <div class="col">
-        <input #input2 type="number" class="form-control" placeholder="3600" aria-label="Example text with button addon" aria-describedby="button-addon1">
-      </div>
-    </div>
-  </div>
-  <div class="container mb-1">
-    <div class="row">
-      <div class="col">
-        <button class="button btn btn-light border-dark" type="button" id="button-addon1"
-          (click)="crawlAllToDueTime()">Uruchom do podanej daty zakończenia</button>
-      </div>
-      <div class="col">
-        <input #input3 type="datetime-local" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <div>
   <!-- SETTINGS TITLE -->
   <div class="app-title-section">
@@ -88,17 +20,7 @@
           <tr>
             <th scope="row">Opóźnienie</th>
             <ng-container *ngFor="let website of websites; let i = index">
-              <!-- <td>{{delays[website]}}</td> -->
               <td>
-                <!-- {{website}} {{i}} -->
-                <!-- <input
-                  class="form-control"
-                  id="delay"
-                  name="delay"
-                  [(ngModel)]="delays[website]"
-                  #delay="ngModel"
-                  required
-                /> -->
                 <input
                   name=delay{{i}}
                   class="form-control app-table-input"
@@ -119,39 +41,9 @@
                   [(ngModel)]="last_dates[website]"
                   required
                 />
-                <!-- <input
-                  class="form-control"
-                  id="lastDates"
-                  name="lastDates"
-                  [(ngModel)]="last_dates[website]"
-                  #lastDates="ngModel"
-                  type="datetime"
-                  [ngStyle]="{'font-size': '12px'}"
-                  required
-                /> -->
               </td>
             </ng-container>
           </tr>
-          <!-- <tr>
-            <th scope="row">Uruchom</th>
-            <ng-container *ngFor="let website of websites">
-              <td>
-                <button>Uruchom jednokrotnie</button>
-              </td>
-            </ng-container>
-          </tr>
-          <tr>
-            <th scope="row"></th>
-            <td colspan="5">
-              <button>Uruchom wszystkie jednorazowo</button>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row"></th>
-            <td colspan="5">
-              <button>Uruchom wszystkie wielokrotnie</button>
-            </td>
-          </tr> -->
         </tbody>
       </table>
       <button class="btn btn-light border-dark" type="submit" [disabled]="!settingsForm.form.valid || !hasSettingsChanged()">Zapisz zmiany</button>
@@ -190,11 +82,9 @@
           <label for="name" class="form-control-plaintext fw-bold">Uruchom wszystkie podaną liczbę razy:</label>
         </div>
         <div class="col-2">
-          <!-- <input type="text" class="form-control" id="inputPassword2" placeholder="INPUT"> -->
           <input #input1 type="number" class="form-control" placeholder="1" aria-label="Example text with button addon" aria-describedby="button-addon1">
         </div>
         <div class="col-1">
-          <!-- <button type="submit" class="btn btn-light border-dark mb-3">Prześlij</button> -->
           <button class="btn btn-light border-dark" type="button" id="button-addon1"
           (click)="crawlAllMultipleTimes()">Uruchom</button>
         </div>
@@ -206,11 +96,9 @@
           <label for="name" class="form-control-plaintext fw-bold">Uruchom wszystkie na podaną liczbę sekund:</label>
         </div>
         <div class="col-2">
-          <!-- <input type="text" class="form-control" id="inputPassword2" placeholder="INPUT"> -->
           <input #input2 type="number" class="form-control" placeholder="3600" aria-label="Example text with button addon" aria-describedby="button-addon1">
         </div>
         <div class="col-1">
-          <!-- <button type="submit" class="btn btn-light border-dark mb-3">Prześlij</button> -->
           <button class="btn btn-light border-dark" type="button" id="button-addon1"
           (click)="crawlAllForGivenTime()">Uruchom</button>
         </div>
@@ -222,11 +110,9 @@
           <label for="name" class="form-control-plaintext fw-bold">Uruchom wszystkie do podanej daty zakończenia:</label>
         </div>
         <div class="col-2">
-          <!-- <input type="text" class="form-control" id="inputPassword2" placeholder="INPUT"> -->
           <input #input3 type="datetime-local" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
         </div>
         <div class="col-1">
-          <!-- <button type="submit" class="btn btn-light border-dark mb-3">Prześlij</button> -->
           <button class="btn btn-light border-dark" type="button" id="button-addon1"
           (click)="crawlAllToDueTime()">Uruchom</button>
         </div>
