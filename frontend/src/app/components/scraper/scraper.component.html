@@ -69,16 +69,16 @@
 <div>
   <!-- SETTINGS TITLE -->
   <div class="app-title-section">
-    <h1>Ustawienia scraperów</h1>
+    <h1>Ustawienia pająków sieciowych</h1>
   </div>
 
   <!-- SETTINGS FORM -->
   <div class="app-section">
     <form (ngSubmit)="onSubmit()" #settingsForm="ngForm">
-      <table class="table">
+      <table class="table app-settings-table align-middle">
         <thead class="thead-light">
           <tr>
-            <th scope="col"></th>
+            <th scope="col">Portal informacyjny</th>
             <ng-container *ngFor="let website of websites">
               <th scope="col">{{website}}</th>
             </ng-container>
@@ -101,7 +101,7 @@
                 /> -->
                 <input
                   name=delay{{i}}
-                  class="form-control"
+                  class="form-control app-table-input"
                   [(ngModel)]="delays[website]"
                   type="number"
                   required
@@ -115,10 +115,8 @@
               <td>
                 <input
                   name=lastDate{{i}}
-                  class="form-control"
+                  class="form-control app-table-input"
                   [(ngModel)]="last_dates[website]"
-                  [ngStyle]="{'font-size': '12px'}"
-                  
                   required
                 />
                 <!-- <input
@@ -162,33 +160,34 @@
 
   <!-- START SCRAPER TITLE -->
   <div class="app-title-section">
-    <h1>Uruchomienie scraperów</h1>
+    <h1>Uruchomienie pająków sieciowych</h1>
   </div>
 
   <!-- START SCRAPER FORM -->
   <div class="app-section">
     <div>
-      <form class="row g-3 my-1">
-        <div class="col-4">
-          <label for="name" class="form-control-plaintext">Uruchom raz dla wybranego portalu:</label>
+      <form class="row g-3 my-1 justify-content-md-center">
+        <div class="col-3">
+          <label for="name" class="form-control-plaintext fw-bold">Uruchom raz dla wybranego portalu:</label>
         </div>
         <div class="col-2">
-          <select class="form-select">
-            <option selected>Portal informacyjny</option>
+          <select #input0 class="form-select" placeholder="test">
+            <option value="" disabled selected>-</option>
             <ng-container *ngFor="let website of websites">
-              <option value="website">{{website}}</option>
+              <option [value]="website">{{website}}</option>
             </ng-container>
           </select>
         </div>
         <div class="col-1">
-          <button type="submit" class="btn btn-light border-dark">Uruchom</button>
+          <button class="btn btn-light border-dark" type="button" id="button-addon1"
+          (click)="crawlOnceForGivenWebsite()">Uruchom</button>
         </div>
       </form>
     </div>
     <div>
-      <form class="row g-3 my-1">
-        <div class="col-4">
-          <label for="name" class="form-control-plaintext">Uruchom wszystkie podaną liczbę razy:</label>
+      <form class="row g-3 my-1 justify-content-md-center">
+        <div class="col-3">
+          <label for="name" class="form-control-plaintext fw-bold">Uruchom wszystkie podaną liczbę razy:</label>
         </div>
         <div class="col-2">
           <!-- <input type="text" class="form-control" id="inputPassword2" placeholder="INPUT"> -->
@@ -202,9 +201,9 @@
       </form>
     </div>
     <div>
-      <form class="row g-3 my-1">
-        <div class="col-4">
-          <label for="name" class="form-control-plaintext">Uruchom wszystkie na podaną liczbę sekund:</label>
+      <form class="row g-3 my-1 justify-content-md-center">
+        <div class="col-3">
+          <label for="name" class="form-control-plaintext fw-bold">Uruchom wszystkie na podaną liczbę sekund:</label>
         </div>
         <div class="col-2">
           <!-- <input type="text" class="form-control" id="inputPassword2" placeholder="INPUT"> -->
@@ -218,9 +217,9 @@
       </form>
     </div>
     <div>
-      <form class="row g-3 my-1">
-        <div class="col-4">
-          <label for="name" class="form-control-plaintext">Uruchom wszystkie do podanej daty zakończenia:</label>
+      <form class="row g-3 my-1 justify-content-md-center">
+        <div class="col-3">
+          <label for="name" class="form-control-plaintext fw-bold">Uruchom wszystkie do podanej daty zakończenia:</label>
         </div>
         <div class="col-2">
           <!-- <input type="text" class="form-control" id="inputPassword2" placeholder="INPUT"> -->
