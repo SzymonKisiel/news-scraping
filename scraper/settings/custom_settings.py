@@ -14,9 +14,13 @@ def get_project_settings():
 
 
 def get_custom_project_settings(website: str, flags: Dict):
+    save_to_json = None
+    save_to_database = None
+    save_logs = None
     if flags is not None:
         save_to_json = flags.get('save_to_json', False)
         save_to_database = flags.get('save_to_database', True)
+        save_logs = flags.get('save_logs', False)
 
     settings = get_project_settings()
     if save_to_json and website is not None:
@@ -28,7 +32,15 @@ def get_custom_project_settings(website: str, flags: Dict):
         settings.set("ITEM_PIPELINES", {
             'news_scraping.pipelines.ArticlesPipeline': 300
         })
-    settings.set("LOG_ENABLED", False)
+    if save_logs:
+        settings.set("LOG_ENABLED", True)
+
+        filename = "logs.txt"
+        settings.set("LOG_FILE", f"data/{filename}")
+        settings.set("LOG_FILE_APPEND", True)
+    else:
+        settings.set("LOG_ENABLED", False)
     # settings.set("COOKIES_DEBUG", True)
+
 
     return settings

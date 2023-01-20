@@ -1,7 +1,7 @@
 from flask import Flask, request, make_response, jsonify, Blueprint
 from pydantic import ValidationError
 from flask_server.scraper_service import *
-from utils.env_util import is_docker
+from utils.env_util import is_docker, is_benchmark
 
 bp = Blueprint('route_prefix', __name__, template_folder='templates', url_prefix='/api/scraper')
 
@@ -14,9 +14,12 @@ app.logger.handlers = logger.handlers
 app.logger.setLevel(logger.level)
 
 flags = {}
+
 if is_docker():
     flags['save_to_database'] = True
     flags['save_to_json'] = False
+if is_benchmark():
+    flags['save_logs'] = True
 
 service = ScraperService(logger, flags)
 
