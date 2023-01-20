@@ -7,7 +7,7 @@ import { ScraperService } from 'src/app/core/services/scraper-service/scraper.se
 @Component({
   selector: 'app-scraper',
   templateUrl: './scraper.component.html',
-  styleUrls: ['./scraper.component.css']
+  styleUrls: ['./scraper.component.scss']
 })
 export class ScraperComponent implements OnInit {
   constructor(private scraperService: ScraperService) { }
@@ -19,6 +19,7 @@ export class ScraperComponent implements OnInit {
   last_dates: { [key: string]: string } = {}
   websites = Constants.WEBSITES
 
+  @ViewChild('input0') websiteInput!: ElementRef;
   @ViewChild('input1') countInput!: ElementRef;
   @ViewChild('input2') timeInput!: ElementRef;
   @ViewChild('input3') dueTimeInput!: ElementRef;
@@ -28,20 +29,30 @@ export class ScraperComponent implements OnInit {
     this.getLastScrapedDates()
   }
 
-  crawlOnce(website: string) {
-    console.log(`crawlOnce ${website}`)
+  crawlOnceForGivenWebsite() {
+    let website = this.websiteInput.nativeElement.value;
+    if (!website) {
+      alert('Wymagane jest podanie portalu informacyjnego.');
+      return;
+    }
+    
+    this._crawlOnce(website);
+  }
+
+  _crawlOnce(website: string) {
+    // console.log(`crawlOnce ${website}`)
 
     this.scraperService.crawlMultipleTimes(website, 1).subscribe({
       next: x => {
-        console.log('Observer got a next value: ')
-        console.log(x)
+        // console.log('Observer got a next value: ')
+        // console.log(x)
         alert(`Pomyślnie uruchomiono scraper na portalu ${website}.`)
       },
       error: err => {
         console.error('Observer got an error: ' + err),
         alert(`Nieznany błąd serwera.`)
       },
-      complete: () => console.log('Observer got a complete notification')
+      // complete: () => console.log('Observer got a complete notification')
     })
   }
 
@@ -51,16 +62,19 @@ export class ScraperComponent implements OnInit {
       alert('Wymagane jest podanie liczby uruchomień.');
       return;
     }
-    console.log(`crawlAllMultipleTimes ${crawlsCount}`)
+    // console.log(`crawlAllMultipleTimes ${crawlsCount}`)
 
     this.scraperService.crawlAllMultipleTimes(crawlsCount).subscribe({
       next: x => {
-        console.log('Observer got a next value: ');
-        console.log(x);
+        // console.log('Observer got a next value: ');
+        // console.log(x);
         alert(`Uruchomiono scraper dla każdej witryny po ${crawlsCount} razy`);
       },
-      error: err => console.error('Observer got an error: ' + err),
-      complete: () => console.log('Observer got a complete notification')
+      error: err => {
+        console.error('Observer got an error: ' + err);
+        alert(`Nieznany błąd serwera.`);
+      }
+      // complete: () => console.log('Observer got a complete notification')
     })
   }
 
@@ -70,16 +84,19 @@ export class ScraperComponent implements OnInit {
       alert('Wymagane jest podanie liczby sekund uruchomienia scrapera.')
       return;
     }
-    console.log(`crawlAllForGivenTime ${runTime}`)
+    // console.log(`crawlAllForGivenTime ${runTime}`)
 
     this.scraperService.crawlAllForGivenTime(runTime).subscribe({
       next: x => {
-        console.log('Observer got a next value: ')
-        console.log(x)
+        // console.log('Observer got a next value: ')
+        // console.log(x)
         alert(`Uruchomiono scraper dla każdej witryny na ${runTime} sekund`);
       },
-      error: err => console.error('Observer got an error: ' + err),
-      complete: () => console.log('Observer got a complete notification')
+      error: err => {
+        console.error('Observer got an error: ' + err);
+        alert(`Nieznany błąd serwera.`);
+      }
+      // complete: () => console.log('Observer got a complete notification')
     })
   }
 
@@ -90,20 +107,24 @@ export class ScraperComponent implements OnInit {
       alert('Wymagane jest podanie daty zakończenia działania scrapera.')
       return;
     }
-    console.log(`crawlAllToDueTime ${dueTime}`)
 
     // to ISO format
     let date = new Date(dueTime);
     let dueTimeUTC= date.toISOString()
 
+    // console.log(`crawlAllToDueTime (UTC) ${dueTimeUTC}`)
+
     this.scraperService.crawlAllToDueTime(dueTimeUTC).subscribe({
       next: x => {
-        console.log('Observer got a next value: ')
-        console.log(x)
+        // console.log('Observer got a next value: ')
+        // console.log(x)
         alert(`Uruchomiono scraper dla każdej witryny do daty zakończenia: ${dueTime}`);
       },
-      error: err => console.error('Observer got an error: ' + err),
-      complete: () => console.log('Observer got a complete notification')
+      error: err => {
+        console.error('Observer got an error: ' + err);
+        alert(`Nieznany błąd serwera.`);
+      }
+      // complete: () => console.log('Observer got a complete notification')
     })
   }
 

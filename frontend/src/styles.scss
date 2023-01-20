@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* custom */
+html body { background-color: lightgray !important; }
+
+@import "bootstrap";
+
+.app-section {
+    @extend .m-2;
+    @extend .p-1;
+}
+
+.app-title-section {
+    @extend .app-section;
+    @extend .pt-3;
+    @extend .ps-2;
+    @extend .pb-0;
+}
+
+.app-table-section {
+    @extend .m-0;
+    @extend .p-0;
+}
