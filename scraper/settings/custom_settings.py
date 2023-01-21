@@ -41,6 +41,8 @@ def get_custom_project_settings(website: str, flags: Dict):
     else:
         settings.set("LOG_ENABLED", False)
     # settings.set("COOKIES_DEBUG", True)
-
+    
+    if website == 'rmf24':
+        settings.set('ROBOTSTXT_OBEY', False)
 
     return settings
