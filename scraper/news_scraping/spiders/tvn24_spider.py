@@ -58,6 +58,9 @@ class Tvn24NewsSpider(spider_util.NewsSpider):
             self.skipped_articles.append(response.url)
 
         dt = self.parse_article_datetime(response)
+        if dt is None:
+            return
+
         yield {
             'url': response.url,
             'published_at': dt.isoformat(),
