@@ -15,6 +15,7 @@ class NewsSpider(scrapy.Spider):
     """
     website = "test"
     bugged_dt = time_util.string_to_datetime('2022-10-10T10:30:00+02:00')
+    stop_date = None
     
 
     def __init__(self, category=None, *args, **kwargs):
@@ -53,7 +54,8 @@ class NewsSpider(scrapy.Spider):
             return None
 
         if dt <= self.last_crawl_date:
-            raise CloseSpider(f"Reached old articles ({dt})")
+            self.stop_date = dt
+            raise CloseSpider("Reached old articles")
         else:
             pass  # print(f"OK: {dt}")
 
@@ -63,6 +65,8 @@ class NewsSpider(scrapy.Spider):
 
     def closed(self, reason):
         if reason == "Reached old articles":
+            self.crawler.stats.set_value('last_published_at', self.last_scraped_date)
+            self.crawler.stats.set_value('stop_published_at', self.stop_date)
             print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
             set_last_scraped_date(self.last_scraped_date, self.website)
         elif reason == "Not implemented":
