@@ -42,6 +42,8 @@ def get_custom_project_settings(website: str, flags: Dict):
         settings.set("LOG_ENABLED", False)
     # settings.set("COOKIES_DEBUG", True)
     
+    # rmf24 robots.txt disabled endpoints like www.rmf24.pl/fakty,nPack,10
+    # temporary fix - disobey robots.txt
     if website == 'rmf24':
         settings.set('ROBOTSTXT_OBEY', False)
 
