@@ -67,6 +67,7 @@ class NewsSpider(scrapy.Spider):
         if reason == "Reached old articles":
             self.crawler.stats.set_value('last_published_at', self.last_scraped_date)
             self.crawler.stats.set_value('stop_published_at', self.stop_date)
+            self.crawler.stats.set_value('website', self.website)
             print(f"Spider {self.name} closed: reached old articles (last published at {self.last_scraped_date})")
             set_last_scraped_date(self.last_scraped_date, self.website)
         elif reason == "Not implemented":
