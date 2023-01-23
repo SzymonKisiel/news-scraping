@@ -4,6 +4,7 @@
 # main-mesh-box__text-container box__text-container
 import scrapy
 from utils import spider_util
+from utils import time_util
 
 
 class Tvn24NewsSpider(spider_util.NewsSpider):
@@ -72,7 +73,29 @@ class Tvn24NewsSpider(spider_util.NewsSpider):
         }
 
     def extract_publish_date(self, response):
-        return self.extract_with_css(response, ".article__content__meta-date ::attr(datetime)")
+        meta_date = self.extract_with_css(response, ".article__content__meta-date ::attr(datetime)")
+        bar_date = self.extract_with_css(response, ".article-top-bar__date ::attr(datetime)")
+        
+        # to refactor - publish date scraping
+        if not bar_date:
+            return meta_date
+        if not meta_date:
+            return bar_date
+
+        bar_date = bar_date[:-1]
+
+        if meta_date == bar_date:
+            return meta_date
+
+        meta_dt = time_util.string_to_datetime(meta_date, self.website)
+        bar_dt = time_util.string_to_datetime(bar_date, self.website)
+
+        if meta_dt >= bar_dt:
+            return meta_date
+        else:
+            return bar_date
+
+        # return self.extract_with_css(response, ".article__content__meta-date ::attr(datetime)")
         # return self.extract_with_css(response, ".article-top-bar__date ::attr(datetime)")
         # return self.extract_with_css(response, "utils.article-top-bar__date ::attr('datetime')")
 
