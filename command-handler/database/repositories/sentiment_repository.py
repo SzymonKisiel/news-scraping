@@ -74,7 +74,7 @@ class SentimentRepository:
             JOIN news_scraping_db.client_search_term cst ON st.id = cst.search_term_id
             JOIN news_scraping_db.client c ON cst.client_id = c.id
             WHERE c.id = %(client_id)s
-            ORDER BY a.published_at;
+            ORDER BY a.published_at DESC;
         """
         data = {
             "client_id": client_id
@@ -94,7 +94,7 @@ class SentimentRepository:
             JOIN news_scraping_db.client_search_term cst ON st.id = cst.search_term_id
             JOIN news_scraping_db.client c ON cst.client_id = c.id
             WHERE c.name = %(client_name)s
-            ORDER BY a.published_at;
+            ORDER BY a.published_at DESC;
         """
         data = {
             "client_name": client_name
@@ -112,7 +112,7 @@ class SentimentRepository:
             JOIN news_scraping_db.article a ON s.article_id = a.id
             JOIN news_scraping_db.search_term st ON s.search_term_id = st.id
             WHERE st.id = %(search_term_id)s
-            ORDER BY a.published_at;
+            ORDER BY a.published_at DESC;
         """
         data = {
             "search_term_id": search_term_id
@@ -130,7 +130,7 @@ class SentimentRepository:
             JOIN news_scraping_db.article a ON s.article_id = a.id
             JOIN news_scraping_db.search_term st ON s.search_term_id = st.id
             WHERE st.term = %(search_term_name)s
-            ORDER BY a.published_at;
+            ORDER BY a.published_at DESC;
         """
         data = {
             "search_term_name": search_term_name
