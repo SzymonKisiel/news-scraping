@@ -12,6 +12,7 @@ from models.sentiment import Sentiment
 from services.models import UpdateSentimentRequest
 from services.sentiment_analyse_service import SentimentAnalyseService
 from utils.sentencizer import Sentencizer
+from unidecode import unidecode
 
 
 class SentimentService:
@@ -37,6 +38,9 @@ class SentimentService:
             text_sentences = self.sentencizer.sentecize(text)
             sentences.extend(text_sentences)
         return sentences
+    
+    def __filter_sentences(self, sentences, word) -> List[str]:
+        return [sentence for sentence in sentences if unidecode(word).lower() in unidecode(sentence).lower()]
 
     def __get_last_created_at(self, articles: List[Article]) -> datetime:
         if not articles:
@@ -66,9 +70,8 @@ class SentimentService:
         for article in articles:
             # split article to sentences
             sentences = self.__split_to_sentences(article.title, article.subtitle, article.text)
-
             # remove sentences without search term
-            sentences = [sentence for sentence in sentences if term.search_term in sentence]
+            sentences = self.__filter_sentences(sentences, term.search_term)
 
             # calculate sentiment for each sentence
             for sentence in sentences:
