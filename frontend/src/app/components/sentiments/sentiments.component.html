@@ -4,6 +4,14 @@
     <h1>Znalezione frazy</h1>
   </div>
 
+  <!-- TOGGLE -->
+  <div class="app-title-section">
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" [(ngModel)]="showScores">
+      <label class="form-check-label" for="flexSwitchCheckDefault">Pokaż oceny częsciowe</label>
+    </div>
+  </div>
+
   <!-- TABLE -->
   <div class="app-table-section">
     <table class="table table-striped align-middle">
@@ -11,11 +19,14 @@
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Znaleziona fraza</th>
-          <th scope="col">Ocena pozytywna</th>
-          <th scope="col">Ocena neutralna</th>
-          <th scope="col">Ocena negatywna</th>
+          <ng-container *ngIf="showScores">
+            <th scope="col">Ocena pozytywna</th>
+            <th scope="col">Ocena neutralna</th>
+            <th scope="col">Ocena negatywna</th>
+          </ng-container>
           <th scope="col">Ocena sumaryczna</th>
           <th scope="col">Link artytułu</th>
+          <th scope="col" style="min-width: 6rem;">Data publikacji</th>
         </tr>
       </thead>
       <tbody>
@@ -23,11 +34,14 @@
           <tr>
             <th scope="row">{{sentiment.id}}</th>
             <td>{{sentiment.sentence}}</td>
-            <td>{{sentiment.positive_score}}</td>
-            <td>{{sentiment.neutral_score}}</td>
-            <td>{{sentiment.negative_score}}</td>
+            <ng-container *ngIf="showScores">
+              <td>{{sentiment.positive_score}}</td>
+              <td>{{sentiment.neutral_score}}</td>
+              <td>{{sentiment.negative_score}}</td>
+            </ng-container>
             <td>{{id2label[sentiment.overall_sentiment]}}</td>
             <td><a [href]="sentiment.article.url">{{sentiment.article.url}}</a></td>
+            <td>{{sentiment.article.published_at | date: 'dd-MM-yyyy HH:mm:ss'}}</td>
           </tr>
         </ng-container>
       </tbody>

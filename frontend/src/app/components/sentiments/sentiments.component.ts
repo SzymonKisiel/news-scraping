@@ -19,6 +19,7 @@ export class SentimentsComponent {
   // searchTerm: string = 'Banaś';
   searchTermId: number = 0;
   id2label = Constants.ID_2_LABEL;
+  showScores = false;
 
   ngOnInit() {
     this.route.params.subscribe(params => {
