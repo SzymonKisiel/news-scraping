@@ -41,8 +41,7 @@ class RadiozetNewsSpider(spider_util.NewsSpider):
         # yield from response.follow_all(categories, self.parse_category)
 
     def parse_category(self, response, category):
-        articles = response.css("div.list-element__title a::attr('href')").getall()
-        # yield from response.follow_all(articles, self.parse_article)
+        articles = response.css("div.column__main--left div.list-element__title a::attr('href')").getall()
 
         for article in articles:
             if self.stop_following_links_in_category[category]:
@@ -50,9 +49,9 @@ class RadiozetNewsSpider(spider_util.NewsSpider):
             else:
                 yield response.follow(article, self.parse_article, cb_kwargs={'category': category})
         if not self.stop_following_links_in_category[category]:
-            next_page = response.css("a.pagination__button--next ::attr('href')").get()
-            if next_page is not None:
-                yield response.follow(next_page, callback=self.parse_category, cb_kwargs={'category': category})
+            next_pages = response.css("a.pagination__button ::attr('href')").getall()
+            if next_pages is not None:
+                yield from response.follow_all(next_pages, callback=self.parse_category, cb_kwargs={'category': category})
 
     def parse_article_datetime(self, response):
         published_at = self.extract_publish_date(response)

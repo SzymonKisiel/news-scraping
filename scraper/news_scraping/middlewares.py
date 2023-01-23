@@ -119,7 +119,7 @@ class Scrapping2DownloaderMiddleware:
 
 class RenewCookiesMiddleware(object):
     def process_response(self, request, response, spider):
-        if spider.website == 'onet' and response.status == 302:
+        if hasattr(spider, 'website') and spider.website == 'onet' and response.status == 302:
             print('FAILED')
             print(request.url)
             print(response.url)
