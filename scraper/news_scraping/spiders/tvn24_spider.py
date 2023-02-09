@@ -28,9 +28,6 @@ class Tvn24NewsSpider(spider_util.NewsSpider):
         self.skipped_articles = []
 
     def parse(self, response):
-        # debug
-        if self.page > 200:
-            return
         if response.status == 500:
             self.crawler.stats.inc_value('skipped_page_count')
             self.skipped_pages.append(response.url)
